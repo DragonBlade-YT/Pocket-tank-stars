@@ -1,0 +1,2391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pocket Tank Stars - Fire-Boltt Clickk & Mobile</title>
+    <!-- PWA Web App Manifest & Theme Meta Tags (Updated with PWABuilder required fields and external PNGs) -->
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Pocket%20Tank%20Stars%22%2C%22short_name%22%3A%22TankStars%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23090d16%22%2C%22theme_color%22%3A%22%23090d16%22%2C%22description%22%3A%22A%202D%20turn-based%20artillery%20game%20tailored%20for%20both%20smartwatch%20and%20mobile%20devices.%22%2C%22orientation%22%3A%22any%22%2C%22id%22%3A%22%2Fpocket-tank-stars%2F%22%2C%22categories%22%3A%5B%22games%22%2C%22entertainment%22%5D%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fplacehold.co%2F192x192%2Ff59e0b%2F090d16.png%3Ftext%3DTS%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Fplacehold.co%2F512x512%2Ff59e0b%2F090d16.png%3Ftext%3DTS%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%2C%22screenshots%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fplacehold.co%2F1280x720%2F090d16%2Ff59e0b.png%3Ftext%3DPocket%2BTank%2BStars%22%2C%22sizes%22%3A%221280x720%22%2C%22type%22%3A%22image%2Fpng%22%2C%22form_factor%22%3A%22wide%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Fplacehold.co%2F720x1280%2F090d16%2Ff59e0b.png%3Ftext%3DPocket%2BTank%2BStars%22%2C%22sizes%22%3A%22720x1280%22%2C%22type%22%3A%22image%2Fpng%22%2C%22form_factor%22%3A%22narrow%22%7D%5D%7D">
+    <meta name="theme-color" content="#090d16">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #090d16;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+        }
+        .font-military {
+            font-family: 'Black Ops One', cursive;
+            letter-spacing: 0.05em;
+        }
+        /* Smartwatch Bezel Styling for Fire-Boltt Clickk (410x502 resolution) */
+        .watch-frame {
+            width: 410px;
+            height: 502px;
+            border-radius: 54px;
+            border: 12px solid #262930;
+            box-shadow: 
+                0 25px 60px rgba(0,0,0,0.85),
+                inset 0 0 18px rgba(255,255,255,0.12),
+                0 0 0 3px #121418;
+            position: relative;
+            background: #0f172a;
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-shrink: 0;
+        }
+        /* Watch Crown Button */
+        .watch-crown {
+            position: absolute;
+            right: -20px;
+            top: 130px;
+            width: 10px;
+            height: 48px;
+            background: linear-gradient(180deg, #4b5563, #1f2937, #4b5563);
+            border-radius: 0 6px 6px 0;
+            border: 1px solid #000;
+            z-index: 50;
+            pointer-events: none;
+        }
+        /* Full Mobile Mode Styling */
+        .mobile-frame {
+            width: 100%;
+            height: 100%;
+            border-radius: 0px;
+            border: none;
+            position: relative;
+            background: #0f172a;
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        /* Custom Range Sliders for Watch & Mobile */
+        input[type=range].tank-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 10px;
+            background: #1e293b;
+            border-radius: 999px;
+            outline: none;
+            border: 1px solid #334155;
+        }
+        input[type=range].tank-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #f59e0b;
+            border: 2px solid #fff;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+        }
+        /* Arcade 3D Button */
+        .btn-fire {
+            background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+            box-shadow: 0 5px 0 #7f1d1d, 0 8px 15px rgba(239, 68, 68, 0.4);
+            transition: transform 0.08s ease, box-shadow 0.08s ease;
+        }
+        .btn-fire:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #7f1d1d, 0 3px 6px rgba(239, 68, 68, 0.4);
+        }
+        .btn-move {
+            background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+            box-shadow: 0 4px 0 #0f172a;
+        }
+        .btn-move:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #0f172a;
+        }
+        /* Responsive scaling when Watch mode is viewed on smaller screens */
+        @media (max-height: 620px), (max-width: 450px) {
+            .watch-scale-wrapper.is-watch {
+                transform: scale(0.82);
+                transform-origin: center center;
+            }
+        }
+    </style>
+</head>
+<body class="select-none">
+
+    <!-- TOP DEVICE & MODE SWITCHER BAR -->
+    <header class="w-full bg-slate-900/95 border-b border-slate-800 px-3 py-1.5 flex flex-wrap items-center justify-between gap-2 z-30 shrink-0">
+        <div class="flex items-center gap-2">
+            <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-amber-500 text-slate-950 font-black text-sm shadow">TS</span>
+            <div>
+                <h1 class="font-military text-sm sm:text-base text-amber-400 leading-none">TANK STARS: POCKET</h1>
+                <p class="text-[10px] text-slate-400 hidden sm:block">Fire-Boltt Clickk (410x502) & Mobile Adaptive Engine</p>
+            </div>
+        </div>
+
+        <!-- Viewport Switcher -->
+        <div class="flex items-center gap-1.5 bg-slate-950 p-1 rounded-xl border border-slate-800">
+            <button id="btnWatchMode" onclick="setDeviceMode('watch')" class="px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition bg-amber-500 text-slate-950 shadow">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="3"/><path d="M9 2h6M9 22h6"/></svg>
+                <span>Watch (410×502)</span>
+            </button>
+            <button id="btnMobileMode" onclick="setDeviceMode('mobile')" class="px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition text-slate-400 hover:text-white">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M18 12h.01"/></svg>
+                <span>Mobile Full</span>
+            </button>
+        </div>
+
+        <!-- Opponent & Audio Controls -->
+        <div class="flex items-center gap-1.5">
+            <button onclick="openMainMenu()" class="px-2 py-1 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition" title="Main Menu">
+                ☰
+            </button>
+            <button onclick="openShopModal()" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-600 hover:bg-amber-500 text-slate-950 transition flex items-center gap-1 shadow" title="Tank Armory Shop">
+                <span>🛒</span><span>Shop</span>
+            </button>
+            <button id="btnSound" onclick="toggleMute()" class="px-2 py-1 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 transition" title="Toggle Sound">
+                🔊
+            </button>
+            <button onclick="resetMatch()" class="px-2 py-1 rounded-lg text-xs font-bold bg-rose-600/90 hover:bg-rose-500 text-white transition" title="Reset Game">
+                ↻
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN STAGE CONTAINER -->
+    <main class="flex-1 w-full flex items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black relative">
+        
+        <div id="scaleWrapper" class="watch-scale-wrapper is-watch flex items-center justify-center w-full h-full">
+            <!-- DEVICE VIEWPORT (Switches between 410x502 Watch Frame and 100% Mobile Frame) -->
+            <div id="deviceViewport" class="watch-frame flex flex-col justify-between">
+                
+                <!-- TOP IN-GAME HUD (Compact for Watch, Spacious for Mobile) -->
+                <div class="absolute top-0 left-0 right-0 z-10 px-3 pt-2.5 pb-1 pointer-events-none flex flex-col gap-1 bg-gradient-to-b from-slate-950/90 via-slate-950/40 to-transparent">
+                    
+                    <div class="flex items-center justify-between gap-2">
+                        <!-- Player 1 Health -->
+                        <div class="flex-1 max-w-[145px]">
+                            <div class="flex justify-between items-center text-[10px] font-extrabold text-sky-400 mb-0.5">
+                                <span id="p1NameLabel" class="truncate">BLUE ABRAMS</span>
+                                <span id="p1HpText">100%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-slate-800/90 rounded-full overflow-hidden border border-slate-700 p-0.5">
+                                <div id="p1HpBar" class="h-full bg-gradient-to-r from-sky-500 to-cyan-300 rounded-full transition-all duration-300" style="width: 100%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Wind & Turn Badge -->
+                        <div class="flex flex-col items-center justify-center bg-slate-900/90 border border-slate-700/80 px-2.5 py-0.5 rounded-xl shadow">
+                            <span id="turnIndicator" class="text-[9px] font-black tracking-wider uppercase text-amber-400">P1 TURN</span>
+                            <div class="flex items-center gap-1 text-[10px] font-bold text-slate-300">
+                                <span>💨</span>
+                                <span id="windText">0 mph</span>
+                            </div>
+                        </div>
+
+                        <!-- Player 2 / AI Health -->
+                        <div class="flex-1 max-w-[145px]">
+                            <div class="flex justify-between items-center text-[10px] font-extrabold text-rose-400 mb-0.5">
+                                <span id="p2HpText">100%</span>
+                                <span id="p2NameLabel" class="truncate">AI TITAN</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-slate-800/90 rounded-full overflow-hidden border border-slate-700 p-0.5">
+                                <div id="p2HpBar" class="h-full bg-gradient-to-l from-rose-500 to-orange-400 rounded-full transition-all duration-300 float-right" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Drag-to-Aim Hint Pill & In-Game Controls -->
+                    <div class="flex justify-between items-center mt-1 pointer-events-auto px-1">
+                        <button id="btnCameraLock" onclick="toggleCameraFollow()" class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-800/90 hover:bg-slate-700 text-emerald-300 border border-slate-700 shadow backdrop-blur-sm transition" title="Toggle Camera">
+                            🎥 Auto
+                        </button>
+                        <div id="aimHintPill" class="text-[9px] text-slate-300/90 bg-slate-900/75 px-2 py-0.5 rounded-full border border-slate-700/60 backdrop-blur-sm shadow truncate max-w-[140px] text-center">
+                            🎯 Drag to aim
+                        </div>
+                        <button onclick="openMainMenu()" class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-800/90 hover:bg-slate-700 text-amber-400 border border-slate-700 shadow backdrop-blur-sm transition">
+                            ☰ Menu
+                        </button>
+                    </div>
+                </div>
+
+                <!-- GAMEPLAY CANVAS -->
+                <div id="canvasContainer" class="relative flex-1 w-full h-full overflow-hidden cursor-crosshair">
+                    <canvas id="gameCanvas" class="block w-full h-full"></canvas>
+                </div>
+
+                <!-- TANK CONTROLS & WEAPONS DECK (Watch & Mobile Adaptive) -->
+                <div class="w-full bg-slate-950/95 border-t border-slate-800/80 p-2.5 flex flex-col gap-2 z-20 shrink-0">
+                    
+                    <!-- Weapon Selector Row -->
+                    <div class="flex items-center justify-between gap-1 overflow-x-auto pb-0.5">
+                        <button id="wepBtn0" onclick="selectWeapon(0)" class="wep-btn px-2 py-1 rounded-lg text-[11px] font-bold bg-amber-500 text-slate-950 flex items-center gap-1 shrink-0 transition shadow">
+                            <span>💣</span><span>Shell</span>
+                        </button>
+                        <button id="wepBtn1" onclick="selectWeapon(1)" class="wep-btn px-2 py-1 rounded-lg text-[11px] font-bold bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1 shrink-0 transition">
+                            <span>💥</span><span>Cluster</span>
+                        </button>
+                        <button id="wepBtn2" onclick="selectWeapon(2)" class="wep-btn px-2 py-1 rounded-lg text-[11px] font-bold bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1 shrink-0 transition">
+                            <span>⚡</span><span>Railgun</span>
+                        </button>
+                        <button id="wepBtn3" onclick="selectWeapon(3)" class="wep-btn px-2 py-1 rounded-lg text-[11px] font-bold bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1 shrink-0 transition">
+                            <span>☢️</span><span id="nukeCountLabel">Nuke (1)</span>
+                        </button>
+                    </div>
+
+                    <!-- Aiming Angle & Power Sliders Row -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <!-- Angle Control -->
+                        <div class="bg-slate-900/90 p-1.5 rounded-xl border border-slate-800 flex flex-col gap-0.5">
+                            <div class="flex justify-between items-center text-[10px] font-bold text-slate-300">
+                                <span>ANGLE</span>
+                                <span id="angleVal" class="text-amber-400">42°</span>
+                            </div>
+                            <input id="angleSlider" type="range" min="0" max="180" value="42" oninput="onSliderAim()" class="tank-slider">
+                        </div>
+
+                        <!-- Power Control -->
+                        <div class="bg-slate-900/90 p-1.5 rounded-xl border border-slate-800 flex flex-col gap-0.5">
+                            <div class="flex justify-between items-center text-[10px] font-bold text-slate-300">
+                                <span>POWER</span>
+                                <span id="powerVal" class="text-amber-400">72%</span>
+                            </div>
+                            <input id="powerSlider" type="range" min="20" max="100" value="72" oninput="onSliderAim()" class="tank-slider">
+                        </div>
+                    </div>
+
+                    <!-- Driving & Fire Controls Row -->
+                    <div class="flex items-center gap-2">
+                        <!-- Fuel Gauge & Drive Buttons -->
+                        <div class="flex items-center gap-1">
+                            <button onmousedown="startDriving(-1)" onmouseup="stopDriving()" ontouchstart="startDriving(-1)" ontouchend="stopDriving()" class="btn-move w-9 h-9 rounded-xl text-white font-black flex items-center justify-center text-xs active:bg-slate-700 transition">
+                                ◀
+                            </button>
+                            <div class="w-12 h-4 bg-slate-900 rounded-full overflow-hidden border border-slate-700 p-0.5" title="Tank Fuel">
+                                <div id="fuelBar" class="h-full bg-cyan-400 rounded-full transition-all duration-150" style="width: 100%;"></div>
+                            </div>
+                            <button onmousedown="startDriving(1)" onmouseup="stopDriving()" ontouchstart="startDriving(1)" ontouchend="stopDriving()" class="btn-move w-9 h-9 rounded-xl text-white font-black flex items-center justify-center text-xs active:bg-slate-700 transition">
+                                ▶
+                            </button>
+                        </div>
+
+                        <!-- Arcade FIRE Button -->
+                        <button onclick="fireWeapon()" class="btn-fire flex-1 h-10 rounded-xl font-military text-sm text-white tracking-wider uppercase flex items-center justify-center gap-1.5 shadow-lg">
+                            <span>🔥</span><span>FIRE!</span>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Victory / Match Over Overlay Modal -->
+                <div id="gameOverModal" class="hidden absolute inset-0 z-30 bg-slate-950/85 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-center">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-3xl mb-2 shadow-lg">
+                        🏆
+                    </div>
+                    <h2 id="winnerTitle" class="font-military text-2xl sm:text-3xl text-amber-400 tracking-wide mb-1">BLUE TANK WINS!</h2>
+                    <p id="winnerSub" class="text-xs text-slate-300 mb-2 max-w-xs">Target eliminated with superior artillery precision.</p>
+                    <div id="goldEarnedBadge" class="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-xl mb-4">
+                        🪙 +150 Gold Earned!
+                    </div>
+                    <button onclick="resetMatch()" class="btn-fire px-6 py-2.5 rounded-2xl font-military text-base text-white tracking-wider">
+                        PLAY AGAIN
+                    </button>
+                </div>
+
+                <!-- NON-BLOCKING TOAST NOTIFICATION -->
+                <div id="toastBanner" class="hidden absolute top-14 left-1/2 -translate-x-1/2 z-[80] bg-slate-900/95 border border-amber-500/80 text-amber-300 px-3.5 py-1.5 rounded-xl text-[11px] font-bold shadow-xl pointer-events-none transition-all">
+                    Notification
+                </div>
+
+                <!-- ARMORY & TANK SHOP MODAL -->
+                <div id="shopModal" class="hidden absolute inset-0 z-[70] bg-slate-950/98 backdrop-blur-md flex flex-col p-3.5 overflow-hidden">
+                    <!-- Clean Shop Header -->
+                    <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-800 shrink-0">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-sm">🛡️</span>
+                            <div>
+                                <h2 class="font-military text-sm sm:text-base text-amber-400 leading-none">TANK ARMORY</h2>
+                                <p class="text-[10px] text-slate-400">Select or unlock heavy combat units</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-black bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-xl border border-amber-500/40 shadow-inner" id="playerGoldDisplay">🪙 600 G</span>
+                            <button onclick="closeShopModal()" class="w-7 h-7 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white font-bold flex items-center justify-center transition">✕</button>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Tank Showcase Grid -->
+                    <div id="tankShopList" class="flex-1 overflow-y-auto pr-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5 content-start">
+                        <!-- Populated via JS with SVG Tank Illustrations -->
+                    </div>
+                </div>
+
+                <!-- APK & PWA INSTALLATION GUIDE MODAL -->
+                <div id="apkModal" class="hidden absolute inset-0 z-[70] bg-slate-950/95 backdrop-blur-md flex flex-col p-4 overflow-y-auto">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🛒</span>
+                            <h2 class="font-military text-base text-amber-400">ARMORY & TANK SHOP</h2>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-lg border border-amber-500/40" id="playerGoldDisplay">🪙 300 G</span>
+                            <button onclick="closeShopModal()" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold flex items-center justify-center">✕</button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-3 text-xs">
+                        <div class="text-[11px] text-slate-400">Select your combat chassis and special class abilities:</div>
+                        
+                        <div id="tankShopList" class="flex flex-col gap-2">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- APK & PWA INSTALLATION GUIDE MODAL -->
+                <div id="apkModal" class="hidden absolute inset-0 z-50 bg-slate-950/92 backdrop-blur-md flex flex-col p-4 overflow-y-auto">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">📦</span>
+                            <h2 class="font-military text-lg text-amber-400">Android Watch & Mobile APK Guide</h2>
+                        </div>
+                        <button onclick="closeApkModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold flex items-center justify-center">✕</button>
+                    </div>
+
+                    <div class="flex flex-col gap-3 text-xs text-slate-300">
+                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+                            <h3 class="font-bold text-cyan-400 mb-1">🚀 Option 1: Install as PWA (Recommended for Fire-Boltt Clickk)</h3>
+                            <p class="leading-relaxed">Because watches run Android/Wear OS variants with browser support:</p>
+                            <ol class="list-decimal list-inside mt-1.5 space-y-1 text-slate-300">
+                               <li>Host this HTML file on any free static host (GitHub Pages, Vercel, Netlify).</li>
+                               <li>Open the URL in your phone/watch browser (Chrome or companion browser).</li>
+                               <li>Tap menu (<b>⋮</b>) and select <b>"Install App"</b> or <b>"Add to Home Screen"</b>. It will run full-screen offline like a native app!</li>
+                            </ol>
+                        </div>
+
+                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+                            <h3 class="font-bold text-amber-400 mb-1">🛠️ Option 2: Instant Web-to-APK Compiler</h3>
+                            <p class="leading-relaxed">Click the button below to generate and download a complete Android App Bundle package configuration ready for sideloading onto your Fire-Boltt Clickk smartwatch:</p>
+                            <button onclick="downloadInstantApkPackage()" class="mt-2 w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold flex items-center justify-center gap-2 shadow">
+                                <span>📦</span><span>Download Instant APK Web Package (.zip)</span>
+                            </button>
+                        </div>
+
+                        <button onclick="downloadManifestFile()" class="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold flex items-center justify-center gap-2 shadow">
+                            <span>📥</span><span>Download manifest.json (PWA Config)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MAIN MENU MODAL -->
+                <div id="mainMenu" class="absolute inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-4">
+                    <div class="w-16 h-16 rounded-3xl bg-amber-500 flex items-center justify-center text-4xl font-black text-slate-950 shadow-[0_0_20px_rgba(245,158,11,0.4)] mb-3">
+                        TS
+                    </div>
+                    <h2 class="font-military text-2xl sm:text-3xl text-amber-400 tracking-wider mb-1 text-center">TANK STARS</h2>
+                    <p class="text-xs font-bold text-slate-400 mb-8 tracking-widest uppercase">Pocket Edition</p>
+                    
+                    <div class="flex flex-col gap-3 w-full max-w-[240px]">
+                        <button onclick="startMatch(true)" class="btn-fire w-full py-3 rounded-xl font-military text-base text-white tracking-wider shadow flex items-center justify-center gap-2">
+                            <span>🤖</span><span>1P VS AI</span>
+                        </button>
+                        <button onclick="startMatch(false)" class="btn-fire w-full py-3 rounded-xl font-military text-base text-white tracking-wider shadow flex items-center justify-center gap-2" style="background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%); box-shadow: 0 5px 0 #1e3a8a, 0 8px 15px rgba(59, 130, 246, 0.4);">
+                            <span>👥</span><span>PASS & PLAY</span>
+                        </button>
+                        <button onclick="openShopModal()" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-amber-400 font-bold flex items-center justify-center gap-2 transition shadow">
+                            <span>🛒</span><span>ARMORY SHOP</span>
+                        </button>
+                        <button onclick="openApkModal()" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-purple-400 font-bold flex items-center justify-center gap-2 transition shadow">
+                            <span>📱</span><span>INSTALL APP</span>
+                        </button>
+                    </div>
+                    <p class="text-[9px] text-slate-500 absolute bottom-4">BUILT FOR WATCH & MOBILE</p>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        /********************************************************************
+         * 1. GAME CONFIGURATION & TANK ROSTER
+         ********************************************************************/
+        const WORLD_WIDTH = 1300;
+        const WORLD_HEIGHT = 650;
+        const GRAVITY = 0.24;
+
+        // SoundFX Synthesizer Engine (Web Audio API)
+        const SoundFX = {
+            ctx: null,
+            muted: false,
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        this.ctx = new AudioContext();
+                    }
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            },
+            click() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.05);
+                    gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.05);
+                } catch(e) {}
+            },
+            shoot(isRailgun) {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = isRailgun ? 'sawtooth' : 'triangle';
+                    osc.frequency.setValueAtTime(isRailgun ? 300 : 150, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(35, this.ctx.currentTime + 0.3);
+                    gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.3);
+                } catch(e) {}
+            },
+            explode(isHeavy) {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const bufferSize = this.ctx.sampleRate * (isHeavy ? 0.8 : 0.4);
+                    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                    const output = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        output[i] = Math.random() * 2 - 1;
+                    }
+                    const whiteNoise = this.ctx.createBufferSource();
+                    whiteNoise.buffer = buffer;
+
+                    const filter = this.ctx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(isHeavy ? 300 : 600, this.ctx.currentTime);
+                    filter.frequency.linearRampToValueAtTime(30, this.ctx.currentTime + (isHeavy ? 0.8 : 0.4));
+
+                    const gain = this.ctx.createGain();
+                    gain.gain.setValueAtTime(isHeavy ? 0.4 : 0.25, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + (isHeavy ? 0.8 : 0.4));
+
+                    whiteNoise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    whiteNoise.start();
+                } catch(e) {}
+            }
+        };
+
+        function toggleMute() {
+            SoundFX.muted = !SoundFX.muted;
+            document.getElementById('btnSound').textContent = SoundFX.muted ? '🔇' : '🔊';
+        }
+
+        // Player economy & inventory state
+        let playerGold = 600;
+        let unlockedTanks = [0]; // Tank index 0 is free initially
+        let selectedTankIndex = 0;
+
+        const TANK_CLASSES = [
+            {
+                id: 0,
+                name: 'Abrams MK-I',
+                hullStyle: 'ABRAMS',
+                badgeIcon: '🛡️',
+                price: 0,
+                primaryColor: '#0284c7',
+                secondaryColor: '#38bdf8',
+                abilityName: 'Airstrike Commander',
+                abilityDesc: 'Classic armored battle tank with cluster bombs, napalm, and carpet airstrikes.',
+                hp: 100,
+                speed: 1.65,
+                weapons: [
+                    { name: 'Shell', icon: '💣', radius: 42, maxDamage: 32, color: '#f59e0b', speedMult: 1.0, gravityMult: 1.0, type: 'NORMAL' },
+                    { name: 'Cluster', icon: '💥', radius: 30, maxDamage: 20, color: '#fb7185', speedMult: 0.96, gravityMult: 1.0, type: 'CLUSTER' },
+                    { name: 'Napalm', icon: '🔥', radius: 50, maxDamage: 28, color: '#ea580c', speedMult: 0.9, gravityMult: 1.1, type: 'NAPALM' },
+                    { name: 'Airstrike', icon: '🛩️', radius: 18, maxDamage: 8, color: '#ef4444', speedMult: 1.2, gravityMult: 1.0, type: 'AIRSTRIKE_FLARE' }
+                ]
+            },
+            {
+                id: 1,
+                name: 'Mammoth Heavy',
+                hullStyle: 'MAMMOTH',
+                badgeIcon: '🦣',
+                price: 200,
+                primaryColor: '#b45309',
+                secondaryColor: '#f59e0b',
+                abilityName: 'Apocalypse Nuke',
+                abilityDesc: 'Twin-barrel siege colossus with heavy shells, airbursts, and mushroom-cloud nukes.',
+                hp: 135,
+                speed: 1.25,
+                weapons: [
+                    { name: 'Twin Shell', icon: '🪨', radius: 55, maxDamage: 40, color: '#f59e0b', speedMult: 0.88, gravityMult: 1.1, type: 'NORMAL' },
+                    { name: 'Airburst', icon: '🎆', radius: 45, maxDamage: 30, color: '#fde047', speedMult: 1.1, gravityMult: 0.9, type: 'AIRBURST' },
+                    { name: 'Mega Clust', icon: '🎇', radius: 26, maxDamage: 16, color: '#f87171', speedMult: 0.92, gravityMult: 1.0, type: 'MEGA_CLUSTER' },
+                    { name: 'Nuke', icon: '☢️', radius: 90, maxDamage: 68, color: '#a3e635', speedMult: 0.85, gravityMult: 1.1, type: 'NUKE' }
+                ]
+            },
+            {
+                id: 2,
+                name: 'Tesla Coil',
+                hullStyle: 'TESLA',
+                badgeIcon: '⚡',
+                price: 350,
+                primaryColor: '#0d9488',
+                secondaryColor: '#2dd4bf',
+                abilityName: 'Orbital Ion Cannon',
+                abilityDesc: 'Arc-coil tank firing chain lightning, terrain-phasing orbs, and orbital lasers.',
+                hp: 95,
+                speed: 1.85,
+                weapons: [
+                    { name: 'Chain Bolt', icon: '⚡', radius: 32, maxDamage: 32, color: '#38bdf8', speedMult: 1.45, gravityMult: 0.3, type: 'LIGHTNING' },
+                    { name: 'Phaser', icon: '👻', radius: 36, maxDamage: 35, color: '#c084fc', speedMult: 1.2, gravityMult: 0.5, type: 'PHASE' },
+                    { name: 'EMP Pulse', icon: '🔵', radius: 75, maxDamage: 16, color: '#60a5fa', speedMult: 1.0, gravityMult: 0.85, type: 'EMP' },
+                    { name: 'Ion Laser', icon: '🛰️', radius: 22, maxDamage: 10, color: '#2dd4bf', speedMult: 1.6, gravityMult: 0.2, type: 'LASER_MARKER' }
+                ]
+            },
+            {
+                id: 3,
+                name: 'Phantom Hover',
+                hullStyle: 'PHANTOM',
+                badgeIcon: '🛸',
+                price: 500,
+                primaryColor: '#7c3aed',
+                secondaryColor: '#c084fc',
+                abilityName: 'Void Singularity',
+                abilityDesc: 'Futuristic anti-gravity hovertank with warp teleporters and gravitational black holes.',
+                hp: 85,
+                speed: 2.15,
+                weapons: [
+                    { name: 'Rail Dart', icon: '🎯', radius: 24, maxDamage: 38, color: '#e879f9', speedMult: 1.75, gravityMult: 0.38, type: 'NORMAL' },
+                    { name: 'Star Burst', icon: '🌠', radius: 22, maxDamage: 18, color: '#d8b4fe', speedMult: 1.1, gravityMult: 0.9, type: 'SCATTER' },
+                    { name: 'Warp Orb', icon: '🔮', radius: 28, maxDamage: 22, color: '#38bdf8', speedMult: 1.15, gravityMult: 0.85, type: 'TELEPORT' },
+                    { name: 'Black Hole', icon: '🌀', radius: 68, maxDamage: 55, color: '#a855f7', speedMult: 1.0, gravityMult: 1.0, type: 'BLACK_HOLE' }
+                ]
+            },
+            {
+                id: 4,
+                name: 'Inferno Pyro',
+                hullStyle: 'INFERNO',
+                badgeIcon: '🔥',
+                price: 650,
+                primaryColor: '#dc2626',
+                secondaryColor: '#f97316',
+                abilityName: 'Armageddon Meteor',
+                abilityDesc: 'Spiked dozer tank that rolls magma bombs down hills and summons fiery meteor showers.',
+                hp: 115,
+                speed: 1.5,
+                weapons: [
+                    { name: 'Magma Lob', icon: '🌋', radius: 46, maxDamage: 34, color: '#f97316', speedMult: 0.95, gravityMult: 1.05, type: 'NAPALM' },
+                    { name: 'Fire Roller', icon: '🛞', radius: 40, maxDamage: 38, color: '#ef4444', speedMult: 0.95, gravityMult: 1.1, type: 'BOUNCER' },
+                    { name: 'Hellfire', icon: '☄️', radius: 24, maxDamage: 18, color: '#fb923c', speedMult: 1.05, gravityMult: 0.95, type: 'SCATTER' },
+                    { name: 'Meteors', icon: '☄️', radius: 20, maxDamage: 10, color: '#facc15', speedMult: 1.25, gravityMult: 0.9, type: 'METEOR_CALL' }
+                ]
+            },
+            {
+                id: 5,
+                name: 'Frostbite Cryo',
+                hullStyle: 'FROST',
+                badgeIcon: '❄️',
+                price: 800,
+                primaryColor: '#0284c7',
+                secondaryColor: '#bae6fd',
+                abilityName: 'Absolute Zero Blizzard',
+                abilityDesc: 'Crystal cryo-tank that freezes enemy engines, builds ice pillars, and calls blizzards.',
+                hp: 105,
+                speed: 1.6,
+                weapons: [
+                    { name: 'Cryo Shard', icon: '🧊', radius: 38, maxDamage: 30, color: '#7dd3fc', speedMult: 1.2, gravityMult: 0.85, type: 'FREEZE' },
+                    { name: 'Ice Spire', icon: '🏔️', radius: 48, maxDamage: 26, color: '#38bdf8', speedMult: 1.0, gravityMult: 1.0, type: 'ICE_PILLAR' },
+                    { name: 'Hailstorm', icon: '🌨️', radius: 22, maxDamage: 17, color: '#e0f2fe', speedMult: 1.05, gravityMult: 0.95, type: 'MEGA_CLUSTER' },
+                    { name: 'Blizzard', icon: '❄️', radius: 85, maxDamage: 52, color: '#bae6fd', speedMult: 1.1, gravityMult: 0.8, type: 'BLIZZARD' }
+                ]
+            },
+            {
+                id: 6,
+                name: 'Arachnid Mech',
+                hullStyle: 'SPIDER',
+                badgeIcon: '🕷️',
+                price: 1000,
+                primaryColor: '#16a34a',
+                secondaryColor: '#86efac',
+                abilityName: 'Tectonic Quake & Vamp',
+                abilityDesc: 'Cybernetic spider-walker with nano-vampire healing drones and terrain-shattering quakes.',
+                hp: 110,
+                speed: 1.95,
+                weapons: [
+                    { name: 'Venom Spit', icon: '🧪', radius: 44, maxDamage: 35, color: '#4ade80', speedMult: 1.05, gravityMult: 0.95, type: 'NORMAL' },
+                    { name: 'Spider Mine', icon: '🕷️', radius: 38, maxDamage: 38, color: '#a3e635', speedMult: 0.95, gravityMult: 1.05, type: 'BOUNCER' },
+                    { name: 'Vamp Drone', icon: '💉', radius: 42, maxDamage: 30, color: '#22c55e', speedMult: 1.15, gravityMult: 0.75, type: 'VAMPIRE' },
+                    { name: 'Earthquake', icon: '🌋', radius: 95, maxDamage: 62, color: '#eab308', speedMult: 0.9, gravityMult: 1.2, type: 'EARTHQUAKE' }
+                ]
+            }
+        ];
+
+        /********************************************************************
+         * 3. GAME STATE VARIABLES
+         ********************************************************************/
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let deviceMode = 'watch'; // 'watch' (410x502) or 'mobile' (responsive)
+        let vsAI = true;
+        let autoFollowCam = true;
+
+        let terrain = new Float32Array(WORLD_WIDTH);
+        let stars = [];
+        let mountains = [];
+
+        let tanks = [];
+        let activePlayer = 0; // 0 = Blue Player 1, 1 = Red Player 2 / AI
+        let wind = 0; // -0.08 to +0.08
+        let gameState = 'MENU'; // 'MENU', 'AIMING', 'FIRING', 'AI_THINKING', 'GAME_OVER'
+        let drivingDir = 0; // -1 left, 0 stop, 1 right
+
+        let projectiles = [];
+        let particles = [];
+        let floatingTexts = [];
+        let activeLasers = [];
+        let specialEffects = []; // Animated visual effects (black holes, nukes, lightning, blizzard, etc.)
+        let screenShake = 0;
+
+        // Camera system (smoothly pans & zooms for the 410x502 Watch Screen)
+        let camera = {
+            x: 0,
+            y: 0,
+            zoom: 1,
+            targetX: 0,
+            targetY: 0,
+            targetZoom: 1,
+            manualOffsetX: 0
+        };
+
+        // Drag-to-aim state
+        let isDraggingAim = false;
+        let dragStart = { x: 0, y: 0 };
+
+        /********************************************************************
+         * 4. INITIALIZATION & PROCEDURAL TERRAIN
+         ********************************************************************/
+        function initEnvironment() {
+            // Generate twinkling background stars
+            stars = [];
+            for (let i = 0; i < 65; i++) {
+                stars.push({
+                    x: Math.random() * WORLD_WIDTH,
+                    y: Math.random() * (WORLD_HEIGHT * 0.65),
+                    r: Math.random() * 1.8 + 0.5,
+                    alpha: Math.random() * 0.7 + 0.3
+                });
+            }
+
+            // Distant mountain silhouette
+            mountains = [];
+            let mx = 0;
+            while (mx <= WORLD_WIDTH + 100) {
+                mountains.push({
+                    x: mx,
+                    y: WORLD_HEIGHT * 0.42 + Math.sin(mx * 0.008) * 55 + (Math.random() - 0.5) * 35
+                });
+                mx += 65;
+            }
+        }
+
+        function generateTerrain() {
+            const baseHeight = WORLD_HEIGHT * 0.68;
+            const seed1 = Math.random() * 100;
+            const seed2 = Math.random() * 100;
+            const seed3 = Math.random() * 100;
+
+            for (let x = 0; x < WORLD_WIDTH; x++) {
+                const h1 = Math.sin(x * 0.0055 + seed1) * 78;
+                const h2 = Math.sin(x * 0.014 + seed2) * 32;
+                const h3 = Math.cos(x * 0.032 + seed3) * 10;
+                terrain[x] = Math.max(190, Math.min(WORLD_HEIGHT - 60, baseHeight + h1 + h2 + h3));
+            }
+        }
+
+        function createTanks() {
+            const p1X = 220 + Math.floor(Math.random() * 90);
+            const p2X = WORLD_WIDTH - 220 - Math.floor(Math.random() * 90);
+
+            const p1Class = TANK_CLASSES[selectedTankIndex];
+            const p2Class = TANK_CLASSES[Math.floor(Math.random() * TANK_CLASSES.length)];
+
+            tanks = [
+                {
+                    id: 0,
+                    name: p1Class.name,
+                    x: p1X,
+                    y: terrain[p1X],
+                    hp: p1Class.hp,
+                    maxHp: p1Class.hp,
+                    fuel: 100,
+                    maxFuel: 100,
+                    angle: 42,
+                    power: 72,
+                    weaponIdx: 0,
+                    ultsLeft: 2,
+                    tilt: 0,
+                    frozen: false,
+                    primaryColor: p1Class.primaryColor,
+                    secondaryColor: p1Class.secondaryColor,
+                    classData: p1Class
+                },
+                {
+                    id: 1,
+                    name: vsAI ? `AI ${p2Class.name}` : `P2 ${p2Class.name}`,
+                    x: p2X,
+                    y: terrain[p2X],
+                    hp: p2Class.hp,
+                    maxHp: p2Class.hp,
+                    fuel: 100,
+                    maxFuel: 100,
+                    angle: 138,
+                    power: 72,
+                    weaponIdx: 0,
+                    ultsLeft: 2,
+                    tilt: 0,
+                    frozen: false,
+                    primaryColor: p2Class.primaryColor,
+                    secondaryColor: p2Class.secondaryColor,
+                    classData: p2Class
+                }
+            ];
+            const p1Label = document.getElementById('p1NameLabel');
+            const p2Label = document.getElementById('p2NameLabel');
+            if (p1Label) p1Label.textContent = tanks[0].name.toUpperCase();
+            if (p2Label) p2Label.textContent = tanks[1].name.toUpperCase();
+            updateTankPhysics();
+        }
+
+        function updateTankPhysics() {
+            tanks.forEach(t => {
+                t.x = Math.max(45, Math.min(WORLD_WIDTH - 45, t.x));
+                const ix = Math.floor(t.x);
+                t.y = terrain[ix];
+                // Calculate slope angle from nearby terrain points
+                const leftY = terrain[Math.max(0, ix - 12)];
+                const rightY = terrain[Math.min(WORLD_WIDTH - 1, ix + 12)];
+                t.tilt = Math.atan2(rightY - leftY, 24);
+            });
+        }
+
+        function randomizeWind() {
+            // Wind between -15 and +15 mph
+            const mph = Math.floor(Math.random() * 31) - 15;
+            wind = mph * 0.0022;
+            const arrow = mph > 0 ? '▶' : (mph < 0 ? '◀' : '•');
+            document.getElementById('windText').textContent = `${Math.abs(mph)} mph ${arrow}`;
+        }
+
+        let toastTimer = null;
+        function showToast(msg) {
+            const el = document.getElementById('toastBanner');
+            if (!el) return;
+            el.textContent = msg;
+            el.classList.remove('hidden');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.add('hidden'), 2400);
+        }
+
+        function hideAllModals() {
+            ['mainMenu', 'shopModal', 'apkModal', 'gameOverModal'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+        }
+
+        function startGame() {
+            startMatch(true);
+        }
+
+        function startMatch(isVsAI) {
+            SoundFX.click();
+            vsAI = Boolean(isVsAI);
+            const p2Label = document.getElementById('p2NameLabel');
+            if (p2Label) p2Label.textContent = vsAI ? 'AI TITAN' : 'RED TIGER';
+            hideAllModals();
+            resetMatch();
+        }
+
+        function resetMatch() {
+            SoundFX.click();
+            document.getElementById('gameOverModal').classList.add('hidden');
+            document.getElementById('mainMenu').classList.add('hidden');
+            initEnvironment();
+            generateTerrain();
+            createTanks();
+            projectiles = [];
+            particles = [];
+            floatingTexts = [];
+            activeLasers = [];
+            specialEffects = [];
+            activePlayer = 0;
+            gameState = 'AIMING';
+            camera.manualOffsetX = 0;
+            randomizeWind();
+            syncHUDWithActiveTank();
+        }
+
+        function openShopModal() {
+            SoundFX.click();
+            document.getElementById('apkModal').classList.add('hidden');
+            renderShopList();
+            document.getElementById('playerGoldDisplay').textContent = `🪙 ${playerGold} G`;
+            document.getElementById('shopModal').classList.remove('hidden');
+        }
+
+        function closeShopModal() {
+            SoundFX.click();
+            document.getElementById('shopModal').classList.add('hidden');
+            if (gameState !== 'MENU') {
+                syncHUDWithActiveTank();
+            }
+        }
+
+        function getTankPreviewSVG(tc) {
+            const p = tc.primaryColor;
+            const s = tc.secondaryColor;
+            switch (tc.hullStyle) {
+                case 'MAMMOTH':
+                    return `<svg viewBox="0 0 120 70" class="w-full h-full drop-shadow">
+                        <rect x="22" y="46" width="76" height="16" rx="7" fill="#1e293b" stroke="#020617" stroke-width="2"/>
+                        <circle cx="34" cy="54" r="4.5" fill="#64748b"/><circle cx="50" cy="54" r="4.5" fill="#64748b"/><circle cx="66" cy="54" r="4.5" fill="#64748b"/><circle cx="82" cy="54" r="4.5" fill="#64748b"/>
+                        <rect x="62" y="18" width="44" height="6" rx="2" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="62" y="26" width="44" height="6" rx="2" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="98" y="17" width="8" height="16" fill="${s}"/>
+                        <rect x="20" y="32" width="76" height="16" rx="4" fill="${p}" stroke="#0f172a" stroke-width="2"/>
+                        <rect x="36" y="20" width="42" height="14" rx="4" fill="${s}" stroke="#0f172a" stroke-width="2"/>
+                    </svg>`;
+                case 'TESLA':
+                    return `<svg viewBox="0 0 120 70" class="w-full h-full drop-shadow">
+                        <rect x="24" y="46" width="72" height="15" rx="7" fill="#1e293b" stroke="#020617" stroke-width="2"/>
+                        <circle cx="36" cy="53.5" r="4" fill="#64748b"/><circle cx="52" cy="53.5" r="4" fill="#64748b"/><circle cx="68" cy="53.5" r="4" fill="#64748b"/><circle cx="84" cy="53.5" r="4" fill="#64748b"/>
+                        <rect x="62" y="22" width="38" height="7" fill="#94a3b8" stroke="#0f172a" stroke-width="1.5"/>
+                        <line x1="74" y1="18" x2="74" y2="33" stroke="#2dd4bf" stroke-width="2.5"/>
+                        <line x1="84" y1="18" x2="84" y2="33" stroke="#2dd4bf" stroke-width="2.5"/>
+                        <circle cx="102" cy="25.5" r="6" fill="#38bdf8"/>
+                        <polygon points="24,46 34,32 86,32 96,46" fill="${p}" stroke="#0f172a" stroke-width="2"/>
+                        <circle cx="60" cy="25" r="13" fill="#38bdf8" stroke="#0f172a" stroke-width="2"/>
+                    </svg>`;
+                case 'PHANTOM':
+                    return `<svg viewBox="0 0 120 70" class="w-full h-full drop-shadow">
+                        <ellipse cx="60" cy="55" rx="34" ry="6" fill="#38bdf8" opacity="0.7"/>
+                        <rect x="64" y="22" width="40" height="4" fill="#e2e8f0"/>
+                        <rect x="64" y="30" width="40" height="4" fill="#e2e8f0"/>
+                        <rect x="66" y="26" width="32" height="4" fill="#e879f9"/>
+                        <path d="M20 44 Q60 18 100 44 Q60 50 20 44 Z" fill="${p}" stroke="#0f172a" stroke-width="2"/>
+                        <path d="M46 31 A14 12 0 0 1 74 31 Z" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5"/>
+                    </svg>`;
+                case 'INFERNO':
+                    return `<svg viewBox="0 0 120 70" class="w-full h-full drop-shadow">
+                        <rect x="22" y="46" width="70" height="15" rx="7" fill="#1e293b" stroke="#020617" stroke-width="2"/>
+                        <circle cx="34" cy="53.5" r="4" fill="#f97316"/><circle cx="50" cy="53.5" r="4" fill="#f97316"/><circle cx="66" cy="53.5" r="4" fill="#f97316"/><circle cx="82" cy="53.5" r="4" fill="#f97316"/>
+                        <polygon points="90,44 106,55 90,61" fill="#94a3b8" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="62" y="20" width="34" height="11" rx="3" fill="#78350f" stroke="#0f172a" stroke-width="1.5"/>
+                        <circle cx="101" cy="25.5" r="6" fill="#f97316"/>
+                        <polygon points="24,46 34,32 84,32 92,46" fill="${p}" stroke="#0f172a" stroke-width="2"/>
+                        <path d="M44 32 A14 14 0 0 1 72 32 Z" fill="${s}" stroke="#0f172a" stroke-width="2"/>
+                    </svg>`;
+                case 'FROST':
+                    return `<svg viewBox="0 0 120 70" class="w-full h-full drop-shadow">
+                        <rect x="24" y="46" width="72" height="15" rx="7" fill="#1e293b" stroke="#020617" stroke-width="2"/>
+                        <circle cx="36" cy="53.5" r="4" fill="#bae6fd"/><circle cx="52" cy="53.5" r="4" fill="#bae6fd"/><circle cx="68" cy="53.5" r="4" fill="#bae6fd"/><circle cx="84" cy="53.5" r="4" fill="#bae6fd"/>
+                        <polygon points="60,21 104,24 104,29 60,32" fill="#bae6fd" stroke="#0f172a" stroke-width="1.5"/>
+                        <polygon points="22,46 38,28 58,16 78,28 96,46" fill="${p}" stroke="#0f172a" stroke-width="2"/>
+                    </svg>`;
+                case 'SPIDER':
+                    return `<svg viewBox="0 0 120 70" class="w-full h-full drop-shadow">
+                        <rect x="64" y="24" width="38" height="8" rx="3" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.5"/>
+                        <ellipse cx="58" cy="36" rx="26" ry="13" fill="${p}" stroke="#0f172a" stroke-width="2"/>
+                        <circle cx="70" cy="34" r="3.5" fill="#ef4444"/><circle cx="77" cy="37" r="2.5" fill="#ef4444"/>
+                        <polyline points="44,42 30,32 22,58" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+                        <polyline points="54,44 44,35 38,60" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+                        <polyline points="64,44 74,35 80,60" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+                        <polyline points="74,42 88,32 96,58" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+                    </svg>`;
+                default: // ABRAMS
+                    return `<svg viewBox="0 0 120 70" class="w-full h-full drop-shadow">
+                        <rect x="24" y="46" width="72" height="15" rx="7" fill="#1e293b" stroke="#020617" stroke-width="2"/>
+                        <circle cx="36" cy="53.5" r="4" fill="#64748b"/><circle cx="52" cy="53.5" r="4" fill="#64748b"/><circle cx="68" cy="53.5" r="4" fill="#64748b"/><circle cx="84" cy="53.5" r="4" fill="#64748b"/>
+                        <rect x="60" y="21" width="42" height="9" rx="3" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="94" y="20" width="8" height="11" fill="${s}"/>
+                        <polygon points="24,46 34,32 86,32 96,46" fill="${p}" stroke="#0f172a" stroke-width="2"/>
+                        <path d="M44 32 A16 15 0 0 1 76 32 Z" fill="${s}" stroke="#0f172a" stroke-width="2"/>
+                    </svg>`;
+            }
+        }
+
+        function renderShopList() {
+            const listEl = document.getElementById('tankShopList');
+            let html = '';
+
+            TANK_CLASSES.forEach(tc => {
+                const isUnlocked = unlockedTanks.includes(tc.id);
+                const isSelected = selectedTankIndex === tc.id;
+                const wepBadges = tc.weapons.map(w => `<span class="px-1.5 py-0.5 rounded-md bg-slate-950/90 border border-slate-700/80 text-[9px] font-semibold text-slate-200 flex items-center gap-0.5"><span>${w.icon}</span><span>${w.name}</span></span>`).join('');
+
+                html += `
+                    <div class="bg-slate-900/95 rounded-2xl border-2 ${isSelected ? 'border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.25)]' : 'border-slate-800 hover:border-slate-700'} p-2.5 flex flex-col justify-between gap-2 transition">
+                        
+                        <!-- Top Visual Tank Preview & Name Banner -->
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-24 h-16 rounded-xl bg-gradient-to-b from-slate-800/90 to-slate-950 border border-slate-700/80 flex items-center justify-center p-1 shrink-0 relative overflow-hidden">
+                                <div class="w-full h-full">${getTankPreviewSVG(tc)}</div>
+                                <span class="absolute top-1 left-1 text-[10px]">${tc.badgeIcon || '🛡️'}</span>
+                            </div>
+
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between gap-1">
+                                    <h4 class="font-military text-xs sm:text-sm text-white truncate">${tc.name}</h4>
+                                    ${isSelected ? '<span class="text-[8px] bg-amber-500 text-slate-950 px-1.5 py-0.5 rounded font-black shrink-0">EQUIPPED</span>' : ''}
+                                </div>
+                                <p class="text-[10px] font-bold text-amber-400 truncate">${tc.abilityName}</p>
+                                <div class="flex items-center gap-2 mt-1 text-[10px] font-bold">
+                                    <span class="text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20">❤️ ${tc.hp}</span>
+                                    <span class="text-cyan-300 bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/20">⚡ ${tc.speed}x</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description & 4 Unique Weapons -->
+                        <div>
+                            <p class="text-[10px] text-slate-400 leading-snug mb-1.5">${tc.abilityDesc}</p>
+                            <div class="flex flex-wrap gap-1">${wepBadges}</div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div class="pt-1 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-[10px] font-bold ${isUnlocked ? 'text-emerald-400' : 'text-amber-300'}">
+                                ${isUnlocked ? '✓ Unlocked in Garage' : `Price: 🪙 ${tc.price} Gold`}
+                            </span>
+                            ${isUnlocked ? 
+                                `<button onclick="selectTank(${tc.id})" class="px-3.5 py-1.5 rounded-xl text-xs font-black transition ${isSelected ? 'bg-slate-800 text-slate-400 cursor-default' : 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow'}">
+                                    ${isSelected ? 'ACTIVE' : 'SELECT TANK'}
+                                </button>` :
+                                `<button onclick="buyTank(${tc.id})" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-purple-600 hover:bg-purple-500 text-white shadow flex items-center gap-1 transition">
+                                    <span>🪙</span><span>BUY ${tc.price} G</span>
+                                </button>`
+                            }
+                        </div>
+                    </div>
+                `;
+            });
+            listEl.innerHTML = html;
+        }
+
+        function buyTank(id) {
+            const tc = TANK_CLASSES.find(t => t.id === id);
+            if (playerGold >= tc.price) {
+                playerGold -= tc.price;
+                unlockedTanks.push(id);
+                selectedTankIndex = id;
+                SoundFX.click();
+                document.getElementById('playerGoldDisplay').textContent = `🪙 ${playerGold} G`;
+                createTanks();
+                renderShopList();
+                showToast(`${tc.name} Unlocked & Equipped!`);
+            } else {
+                SoundFX.click();
+                showToast('Not enough Gold! Win matches to earn more.');
+            }
+        }
+
+        function selectTank(id) {
+            SoundFX.click();
+            selectedTankIndex = id;
+            createTanks();
+            renderShopList();
+            showToast(`${TANK_CLASSES[id].name} Equipped!`);
+        }
+
+        function openApkModal() {
+            SoundFX.click();
+            document.getElementById('shopModal').classList.add('hidden');
+            document.getElementById('apkModal').classList.remove('hidden');
+        }
+
+        function closeApkModal() {
+            SoundFX.click();
+            document.getElementById('apkModal').classList.add('hidden');
+        }
+
+        function downloadManifestFile() {
+            SoundFX.click();
+            const manifestContent = JSON.stringify({
+                "name": "Pocket Tank Stars",
+                "short_name": "TankStars",
+                "start_url": "./",
+                "display": "standalone",
+                "background_color": "#090d16",
+                "theme_color": "#090d16",
+                "description": "A 2D turn-based artillery game tailored for both smartwatch and mobile devices.",
+                "orientation": "any",
+                "id": "/pocket-tank-stars/",
+                "categories": [
+                    "games",
+                    "entertainment"
+                ],
+                "icons": [
+                    {
+                        "src": "https://placehold.co/192x192/f59e0b/090d16.png?text=TS",
+                        "sizes": "192x192",
+                        "type": "image/png",
+                        "purpose": "any"
+                    },
+                    {
+                        "src": "https://placehold.co/512x512/f59e0b/090d16.png?text=TS",
+                        "sizes": "512x512",
+                        "type": "image/png",
+                        "purpose": "any maskable"
+                    }
+                ],
+                "screenshots": [
+                    {
+                        "src": "https://placehold.co/1280x720/090d16/f59e0b.png?text=Pocket+Tank+Stars",
+                        "sizes": "1280x720",
+                        "type": "image/png",
+                        "form_factor": "wide"
+                    },
+                    {
+                        "src": "https://placehold.co/720x1280/090d16/f59e0b.png?text=Pocket+Tank+Stars",
+                        "sizes": "720x1280",
+                        "type": "image/png",
+                        "form_factor": "narrow"
+                    }
+                ]
+            }, null, 2);
+
+            const blob = new Blob([manifestContent], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'manifest.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadInstantApkPackage() {
+            SoundFX.click();
+            showToast('Downloading manifest.json! Paste your GitHub Pages URL into PWABuilder.com for the .apk!');
+            downloadManifestFile();
+        }
+
+        /********************************************************************
+         * 5. DEVICE SWITCHER & HUD SYNCHRONIZATION
+         ********************************************************************/
+        function setDeviceMode(mode) {
+            SoundFX.click();
+            deviceMode = mode;
+            const viewport = document.getElementById('deviceViewport');
+            const scaleWrapper = document.getElementById('scaleWrapper');
+            const btnWatch = document.getElementById('btnWatchMode');
+            const btnMobile = document.getElementById('btnMobileMode');
+
+            if (mode === 'watch') {
+                viewport.className = 'watch-frame flex flex-col justify-between';
+                scaleWrapper.classList.add('is-watch');
+                btnWatch.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition bg-amber-500 text-slate-950 shadow';
+                btnMobile.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition text-slate-400 hover:text-white';
+                autoFollowCam = true;
+            } else {
+                viewport.className = 'mobile-frame flex flex-col justify-between';
+                scaleWrapper.classList.remove('is-watch');
+                btnMobile.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition bg-amber-500 text-slate-950 shadow';
+                btnWatch.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition text-slate-400 hover:text-white';
+            }
+            updateCamButtonLabel();
+            setTimeout(resizeCanvas, 50);
+        }
+
+        function openMainMenu() {
+            if (window.SoundFX) SoundFX.click();
+            document.getElementById('shopModal').classList.add('hidden');
+            document.getElementById('apkModal').classList.add('hidden');
+            document.getElementById('mainMenu').classList.remove('hidden');
+            gameState = 'MENU';
+        }
+
+        function toggleCameraFollow() {
+            if (window.SoundFX) SoundFX.click();
+            autoFollowCam = !autoFollowCam;
+            camera.manualOffsetX = 0;
+            updateCamButtonLabel();
+        }
+
+        function updateCamButtonLabel() {
+            const btn = document.getElementById('btnCameraLock');
+            if (btn) btn.textContent = autoFollowCam ? '🎥 Auto' : '🎥 Wide';
+        }
+
+        function syncHUDWithActiveTank() {
+            const t = tanks[activePlayer];
+            if (!t) return;
+
+            // Update HP bars (normalized to each tank's maxHp)
+            const p1Pct = Math.max(0, Math.round((tanks[0].hp / tanks[0].maxHp) * 100));
+            const p2Pct = Math.max(0, Math.round((tanks[1].hp / tanks[1].maxHp) * 100));
+            document.getElementById('p1HpBar').style.width = `${p1Pct}%`;
+            document.getElementById('p1HpText').textContent = `${Math.max(0, Math.round(tanks[0].hp))} HP`;
+            document.getElementById('p2HpBar').style.width = `${p2Pct}%`;
+            document.getElementById('p2HpText').textContent = `${Math.max(0, Math.round(tanks[1].hp))} HP`;
+
+            // Update Turn Badge
+            const turnBadge = document.getElementById('turnIndicator');
+            if (activePlayer === 0) {
+                turnBadge.textContent = 'BLUE TURN';
+                turnBadge.className = 'text-[9px] font-black tracking-wider uppercase text-sky-400';
+            } else {
+                turnBadge.textContent = vsAI ? 'AI THINKING...' : 'RED TURN';
+                turnBadge.className = 'text-[9px] font-black tracking-wider uppercase text-rose-400';
+            }
+
+            // Update Sliders
+            document.getElementById('angleSlider').value = Math.round(t.angle);
+            document.getElementById('angleVal').textContent = `${Math.round(t.angle)}°`;
+            document.getElementById('powerSlider').value = Math.round(t.power);
+            document.getElementById('powerVal').textContent = `${Math.round(t.power)}%`;
+
+            // Update Fuel
+            document.getElementById('fuelBar').style.width = `${Math.max(0, t.fuel)}%`;
+
+            // Update Dynamic Weapons based on current Tank Class
+            const weps = t.classData.weapons;
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`wepBtn${i}`);
+                const wep = weps[i];
+                const label = i === 3 ? `${wep.name} (${t.ultsLeft})` : wep.name;
+                
+                btn.innerHTML = `<span>${wep.icon}</span><span id="wepLabel${i}" class="whitespace-nowrap">${label}</span>`;
+                
+                if (i === t.weaponIdx) {
+                    btn.className = 'wep-btn px-2 py-1 rounded-lg text-[11px] font-bold bg-amber-500 text-slate-950 flex items-center gap-1 shrink-0 transition shadow';
+                } else {
+                    btn.className = 'wep-btn px-2 py-1 rounded-lg text-[11px] font-bold bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1 shrink-0 transition';
+                }
+            }
+        }
+
+        function selectWeapon(idx) {
+            if (gameState !== 'AIMING') return;
+            const t = tanks[activePlayer];
+            if (idx === 3 && t.ultsLeft <= 0) {
+                spawnFloatingText(t.x, t.y - 45, 'NO ULTIMATES LEFT!', '#fb7185');
+                return;
+            }
+            SoundFX.click();
+            t.weaponIdx = idx;
+            syncHUDWithActiveTank();
+        }
+
+        function onSliderAim() {
+            if (gameState !== 'AIMING') return;
+            const t = tanks[activePlayer];
+            t.angle = parseFloat(document.getElementById('angleSlider').value);
+            t.power = parseFloat(document.getElementById('powerSlider').value);
+            document.getElementById('angleVal').textContent = `${Math.round(t.angle)}°`;
+            document.getElementById('powerVal').textContent = `${Math.round(t.power)}%`;
+        }
+
+        function startDriving(dir) {
+            if (gameState !== 'AIMING') return;
+            SoundFX.init();
+            drivingDir = dir;
+        }
+
+        function stopDriving() {
+            drivingDir = 0;
+        }
+
+        /********************************************************************
+         * 6. FIRING, PROJECTILES & DESTRUCTIBLE TERRAIN
+         ********************************************************************/
+        function fireWeapon() {
+            if (gameState !== 'AIMING') return;
+            const shooter = tanks[activePlayer];
+            const wep = shooter.classData.weapons[shooter.weaponIdx];
+
+            if (shooter.weaponIdx === 3) {
+                if (shooter.ultsLeft <= 0) return;
+                shooter.ultsLeft--;
+            }
+
+            gameState = 'FIRING';
+            drivingDir = 0;
+            const isEnergy = (wep.name.includes('Zap') || wep.name.includes('Phaser') || wep.name.includes('Sniper'));
+            SoundFX.shoot(isEnergy);
+
+            const rad = (shooter.angle * Math.PI) / 180;
+            const turretTipX = shooter.x + Math.cos(rad) * 28;
+            const turretTipY = (shooter.y - 14) - Math.sin(rad) * 28;
+
+            const speed = (shooter.power * 0.165) * wep.speedMult;
+
+            // Handle Scatter or Star Scatter spread
+            if (wep.type === 'SCATTER') {
+                for (let s = -2; s <= 2; s++) {
+                    const sRad = rad + (s * 0.07);
+                    projectiles.push({
+                        x: turretTipX, y: turretTipY,
+                        vx: Math.cos(sRad) * speed, vy: -Math.sin(sRad) * speed,
+                        weapon: wep, shooterId: shooter.id, bouncesLeft: 0, hasSplit: false, trail: []
+                    });
+                }
+            } else {
+                projectiles.push({
+                    x: turretTipX, y: turretTipY,
+                    vx: Math.cos(rad) * speed, vy: -Math.sin(rad) * speed,
+                    weapon: wep, shooterId: shooter.id,
+                    bouncesLeft: wep.type === 'BOUNCER' ? 4 : 0,
+                    hasSplit: false, trail: []
+                });
+            }
+
+            // Muzzle flash particles
+            for (let i = 0; i < 12; i++) {
+                particles.push({
+                    x: turretTipX,
+                    y: turretTipY,
+                    vx: Math.cos(rad) * (Math.random() * 4 + 1) + (Math.random() - 0.5) * 2,
+                    vy: -Math.sin(rad) * (Math.random() * 4 + 1) + (Math.random() - 0.5) * 2,
+                    radius: Math.random() * 4 + 2,
+                    color: wep.color,
+                    alpha: 1,
+                    decay: 0.05
+                });
+            }
+
+            if (shooter.weaponIdx === 3 && shooter.ultsLeft === 0) {
+                shooter.weaponIdx = 0;
+            }
+            syncHUDWithActiveTank();
+        }
+
+        function detonate(x, y, wep, shooterId = activePlayer) {
+            SoundFX.explode(wep.radius > 60);
+            screenShake = wep.radius > 60 ? 22 : (wep.type === 'LASER_MARKER' || wep.type === 'EARTHQUAKE' ? 28 : 9);
+
+            // 0. Unique Ability Animations & Secondary Spawns
+            if (wep.type === 'AIRSTRIKE_FLARE') {
+                spawnFloatingText(x, y - 50, '🛩️ AIRSTRIKE INCOMING!', '#ef4444');
+                for (let i = -2; i <= 2; i++) {
+                    projectiles.push({
+                        x: Math.max(30, Math.min(WORLD_WIDTH - 30, x + i * 38)),
+                        y: -80 - Math.abs(i) * 45,
+                        vx: (i * 0.3), vy: 5.5,
+                        weapon: { ...wep, type: 'NORMAL', radius: 38, maxDamage: 24, color: '#f97316' },
+                        shooterId, bouncesLeft: 0, hasSplit: true, trail: []
+                    });
+                }
+            }
+
+            if (wep.type === 'METEOR_CALL') {
+                spawnFloatingText(x, y - 55, '☄️ METEOR SHOWER!', '#f97316');
+                for (let i = 0; i < 6; i++) {
+                    projectiles.push({
+                        x: Math.max(40, Math.min(WORLD_WIDTH - 40, x - 140 + i * 45 + (Math.random() * 20 - 10))),
+                        y: -100 - i * 55,
+                        vx: 2.2, vy: 6.2,
+                        weapon: { ...wep, type: 'NAPALM', radius: 42, maxDamage: 24, color: '#fb923c' },
+                        shooterId, bouncesLeft: 0, hasSplit: true, trail: []
+                    });
+                }
+            }
+
+            if (wep.type === 'LASER_MARKER') {
+                activeLasers.push({ x: x, timer: 36 });
+                for (let ix = Math.floor(x - 24); ix <= Math.ceil(x + 24); ix++) {
+                    if (ix > 0 && ix < WORLD_WIDTH) {
+                        terrain[ix] = Math.min(WORLD_HEIGHT - 20, terrain[ix] + 95);
+                    }
+                }
+            }
+
+            if (wep.type === 'NUKE') {
+                specialEffects.push({ type: 'NUKE_CLOUD', x, y, timer: 55, maxTimer: 55 });
+            }
+
+            if (wep.type === 'BLACK_HOLE') {
+                specialEffects.push({ type: 'BLACK_HOLE_VORTEX', x, y: y - 18, timer: 50, maxTimer: 50 });
+            }
+
+            if (wep.type === 'LIGHTNING') {
+                specialEffects.push({ type: 'LIGHTNING_STRIKE', x, y, timer: 22, maxTimer: 22 });
+            }
+
+            if (wep.type === 'BLIZZARD') {
+                specialEffects.push({ type: 'BLIZZARD_STORM', x, y, timer: 50, maxTimer: 50 });
+            }
+
+            if (wep.type === 'EARTHQUAKE') {
+                specialEffects.push({ type: 'QUAKE_WAVES', x, y, timer: 40, maxTimer: 40 });
+                // Jagged seismic terrain fissure
+                for (let ix = Math.max(5, Math.floor(x - 110)); ix <= Math.min(WORLD_WIDTH - 5, Math.ceil(x + 110)); ix++) {
+                    const dist = Math.abs(ix - x);
+                    const jag = Math.sin(ix * 0.45) * 18 * (1 - dist / 110);
+                    terrain[ix] = Math.max(160, Math.min(WORLD_HEIGHT - 25, terrain[ix] + jag + 14));
+                }
+            }
+
+            if (wep.type === 'TELEPORT') {
+                const shooter = tanks[shooterId];
+                if (shooter && shooter.hp > 0) {
+                    specialEffects.push({ type: 'TELEPORT_FLASH', x: shooter.x, y: shooter.y, timer: 25, maxTimer: 25 });
+                    shooter.x = Math.max(50, Math.min(WORLD_WIDTH - 50, x));
+                    updateTankPhysics();
+                    specialEffects.push({ type: 'TELEPORT_FLASH', x: shooter.x, y: shooter.y, timer: 25, maxTimer: 25 });
+                    spawnFloatingText(shooter.x, shooter.y - 48, '🔮 WARPED!', '#c084fc');
+                }
+            }
+
+            // 1. Carve circular crater OR raise ice pillar in heightmap terrain
+            const r = wep.radius;
+            const startX = Math.max(1, Math.floor(x - r));
+            const endX = Math.min(WORLD_WIDTH - 2, Math.ceil(x + r));
+
+            if (wep.type === 'ICE_PILLAR') {
+                for (let ix = startX; ix <= endX; ix++) {
+                    const dx = ix - x;
+                    const heightBoost = Math.sqrt(Math.max(0, r * r - dx * dx)) * 1.15;
+                    terrain[ix] = Math.max(150, terrain[ix] - heightBoost);
+                }
+                specialEffects.push({ type: 'ICE_SPIKES', x, y, timer: 38, maxTimer: 38 });
+            } else if (wep.type !== 'TELEPORT') {
+                for (let ix = startX; ix <= endX; ix++) {
+                    const dx = ix - x;
+                    const depth = Math.sqrt(Math.max(0, r * r - dx * dx));
+                    const craterBottom = y + depth;
+                    if (terrain[ix] < craterBottom) {
+                        terrain[ix] = Math.min(WORLD_HEIGHT - 25, Math.max(terrain[ix], craterBottom));
+                    }
+                }
+            }
+
+            // 2. Explosion particles & themed elemental debris
+            let count = wep.radius > 60 ? 55 : 28;
+            if (wep.type === 'NAPALM') count = 52;
+
+            for (let i = 0; i < count; i++) {
+                const ang = Math.random() * Math.PI * 2;
+                const spd = Math.random() * (wep.radius * 0.14) + 1.5;
+                const isFire = (wep.type === 'NAPALM' && Math.random() > 0.35);
+                const isIce = (wep.type === 'FREEZE' || wep.type === 'BLIZZARD' || wep.type === 'ICE_PILLAR');
+
+                particles.push({
+                    x, y,
+                    vx: Math.cos(ang) * spd,
+                    vy: Math.sin(ang) * spd - (isFire ? 3 : 1.5),
+                    radius: Math.random() * 6 + 2.5,
+                    color: isIce ? (i % 2 === 0 ? '#bae6fd' : '#38bdf8') : (isFire ? '#ea580c' : (i % 3 === 0 ? '#ffffff' : (i % 2 === 0 ? wep.color : '#f97316'))),
+                    alpha: 1,
+                    decay: isFire ? (Math.random() * 0.01 + 0.01) : (Math.random() * 0.025 + 0.018)
+                });
+            }
+
+            // 3. Damage & Special Status Effects for both tanks
+            tanks.forEach(t => {
+                const dist = Math.hypot(t.x - x, (t.y - 10) - y);
+                const hitRadius = (wep.type === 'LASER_MARKER') ? 48 : r + 24;
+                
+                if (dist < hitRadius) {
+                    const factor = (wep.type === 'LASER_MARKER') ? 1 : 1 - (dist / hitRadius);
+                    const dmg = Math.max(4, Math.round(wep.maxDamage * Math.pow(factor, 0.75)));
+                    t.hp = Math.max(0, t.hp - dmg);
+                    spawnFloatingText(t.x, t.y - 42, `-${dmg} HP`, '#fb7185');
+
+                    // Vampire Drone heals shooter for 60% of damage dealt
+                    if (wep.type === 'VAMPIRE' && tanks[shooterId] && tanks[shooterId].hp > 0) {
+                        const heal = Math.round(dmg * 0.65);
+                        tanks[shooterId].hp = Math.min(tanks[shooterId].maxHp, tanks[shooterId].hp + heal);
+                        spawnFloatingText(tanks[shooterId].x, tanks[shooterId].y - 58, `+${heal} HP STEAL`, '#4ade80');
+                        specialEffects.push({ type: 'VAMP_BEAM', x1: t.x, y1: t.y - 12, x2: tanks[shooterId].x, y2: tanks[shooterId].y - 12, timer: 28, maxTimer: 28 });
+                    }
+
+                    if (wep.type === 'EMP') {
+                        t.fuel = 0;
+                        spawnFloatingText(t.x, t.y - 65, `⚡ EMP DRAIN!`, '#60a5fa');
+                    }
+
+                    if (wep.type === 'FREEZE' || wep.type === 'BLIZZARD') {
+                        t.fuel = 0;
+                        t.frozen = true;
+                        spawnFloatingText(t.x, t.y - 65, `❄️ FROZEN!`, '#7dd3fc');
+                    }
+                }
+                
+                if (wep.type === 'BLACK_HOLE' && dist < hitRadius * 2.8) {
+                    t.x += (x - t.x) * 0.32; // Pull tank into the singularity
+                }
+            });
+
+            updateTankPhysics();
+            syncHUDWithActiveTank();
+        }
+
+        function spawnFloatingText(x, y, text, color) {
+            floatingTexts.push({
+                x,
+                y,
+                text,
+                color,
+                alpha: 1.0,
+                vy: -1.1
+            });
+        }
+
+        function endTurn() {
+            // Check win condition
+            if (tanks[0].hp <= 0 || tanks[1].hp <= 0) {
+                gameState = 'GAME_OVER';
+                const modal = document.getElementById('gameOverModal');
+                const title = document.getElementById('winnerTitle');
+                const sub = document.getElementById('winnerSub');
+                const goldBadge = document.getElementById('goldEarnedBadge');
+                modal.classList.remove('hidden');
+
+                if (tanks[0].hp <= 0 && tanks[1].hp <= 0) {
+                    title.textContent = 'DOUBLE KO DRAW!';
+                    sub.textContent = 'Both tanks were obliterated in the final blast!';
+                    goldBadge.textContent = '🪙 +50 Gold Earned';
+                    playerGold += 50;
+                } else if (tanks[1].hp <= 0) {
+                    title.textContent = 'BLUE ABRAMS WINS!';
+                    sub.textContent = 'Target eliminated with superior artillery precision!';
+                    goldBadge.textContent = '🪙 +200 Gold Earned!';
+                    playerGold += 200;
+                } else {
+                    title.textContent = vsAI ? 'AI TITAN WINS!' : 'RED TIGER WINS!';
+                    sub.textContent = 'Enemy heavy armor conquered the battlefield.';
+                    goldBadge.textContent = '🪙 +75 Gold Earned';
+                    playerGold += 75;
+                }
+                return;
+            }
+
+            // Switch active player
+            activePlayer = activePlayer === 0 ? 1 : 0;
+            if (tanks[activePlayer].frozen) {
+                tanks[activePlayer].fuel = Math.round(tanks[activePlayer].maxFuel * 0.35);
+                tanks[activePlayer].frozen = false;
+                spawnFloatingText(tanks[activePlayer].x, tanks[activePlayer].y - 50, '❄️ THAWED (35% FUEL)', '#7dd3fc');
+            } else {
+                tanks[activePlayer].fuel = tanks[activePlayer].maxFuel;
+            }
+            camera.manualOffsetX = 0;
+            randomizeWind();
+            syncHUDWithActiveTank();
+
+            if (activePlayer === 1 && vsAI) {
+                gameState = 'AI_THINKING';
+                setTimeout(executeAITurn, 1100);
+            } else {
+                gameState = 'AIMING';
+            }
+        }
+
+        /********************************************************************
+         * 7. AI ARTILLERY SOLVER (For 1P vs AI Mode)
+         ********************************************************************/
+        function executeAITurn() {
+            if (gameState !== 'AI_THINKING') return;
+            const ai = tanks[1];
+            const target = tanks[0];
+
+            // Small tactical movement before firing
+            const moveSteps = Math.floor(Math.random() * 24) - 12;
+            ai.x = Math.max(80, Math.min(WORLD_WIDTH - 80, ai.x + moveSteps));
+            ai.fuel = Math.max(20, ai.fuel - Math.abs(moveSteps) * 1.5);
+            updateTankPhysics();
+
+            // Select AI weapon
+            if (ai.ultsLeft > 0 && Math.random() < 0.25) {
+                ai.weaponIdx = 3; // Ultimate
+            } else {
+                const choices = [0, 1, 2];
+                ai.weaponIdx = choices[Math.floor(Math.random() * choices.length)];
+            }
+
+            // Simulate trajectories to find best angle & power
+            const wep = ai.classData.weapons[ai.weaponIdx];
+            let bestAngle = 135;
+            let bestPower = 70;
+            let bestDist = Infinity;
+
+            for (let testAng = 108; testAng <= 162; testAng += 3) {
+                for (let testPwr = 35; testPwr <= 98; testPwr += 3) {
+                    const rad = (testAng * Math.PI) / 180;
+                    const speed = (testPwr * 0.165) * wep.speedMult;
+                    let sx = ai.x + Math.cos(rad) * 28;
+                    let sy = (ai.y - 14) - Math.sin(rad) * 28;
+                    let svx = Math.cos(rad) * speed;
+                    let svy = -Math.sin(rad) * speed;
+
+                    for (let step = 0; step < 260; step++) {
+                        sx += svx;
+                        sy += svy;
+                        svx += wind;
+                        svy += GRAVITY * wep.gravityMult;
+
+                        const ix = Math.floor(sx);
+                        if (ix < 0 || ix >= WORLD_WIDTH || sy >= terrain[ix]) {
+                            const d = Math.hypot(sx - target.x, sy - target.y);
+                            if (d < bestDist) {
+                                bestDist = d;
+                                bestAngle = testAng;
+                                bestPower = testPwr;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Add slight human-like inaccuracy so player has a fair fight
+            ai.angle = Math.max(95, Math.min(170, bestAngle + (Math.random() * 6 - 3)));
+            ai.power = Math.max(25, Math.min(100, bestPower + (Math.random() * 6 - 3)));
+
+            syncHUDWithActiveTank();
+            gameState = 'AIMING';
+            fireWeapon();
+        }
+
+        /********************************************************************
+         * 8. TOUCH & MOUSE DRAG-TO-AIM ON CANVAS
+         ********************************************************************/
+        function getCanvasPoint(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        canvas.addEventListener('mousedown', onPointerDown);
+        canvas.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+
+        canvas.addEventListener('touchstart', (e) => {
+            onPointerDown(e);
+            e.preventDefault();
+        }, { passive: false });
+        canvas.addEventListener('touchmove', (e) => {
+            onPointerMove(e);
+            e.preventDefault();
+        }, { passive: false });
+        window.addEventListener('touchend', onPointerUp);
+
+        function onPointerDown(e) {
+            if (gameState !== 'AIMING') return;
+            SoundFX.init();
+            isDraggingAim = true;
+            dragStart = getCanvasPoint(e);
+        }
+
+        function onPointerMove(e) {
+            if (!isDraggingAim || gameState !== 'AIMING') return;
+            const pt = getCanvasPoint(e);
+            const t = tanks[activePlayer];
+
+            // Convert tank world coords to screen coords
+            const tankScreenX = (t.x - camera.x) * camera.zoom + canvas.width / 2;
+            const tankScreenY = (t.y - 16 - camera.y) * camera.zoom + canvas.height / 2;
+
+            const dx = pt.x - tankScreenX;
+            const dy = tankScreenY - pt.y; // Invert Y so up is positive
+
+            let deg = (Math.atan2(dy, dx) * 180) / Math.PI;
+            if (deg < 0) deg = deg < -90 ? 180 : 0;
+            t.angle = Math.max(5, Math.min(175, deg));
+
+            const dist = Math.hypot(dx, dy);
+            t.power = Math.max(20, Math.min(100, (dist / 135) * 100));
+
+            syncHUDWithActiveTank();
+        }
+
+        function onPointerUp() {
+            isDraggingAim = false;
+        }
+
+        /********************************************************************
+         * 9. MAIN GAME UPDATE & CAMERA SYSTEM
+         ********************************************************************/
+        function updateGame() {
+            // 1. Handle Tank Driving in AIMING phase
+            if (gameState === 'AIMING' && drivingDir !== 0) {
+                const t = tanks[activePlayer];
+                if (t.fuel > 0) {
+                    const moveSpeed = t.classData ? t.classData.speed : 1.65;
+                    const nextX = Math.max(45, Math.min(WORLD_WIDTH - 45, t.x + drivingDir * moveSpeed));
+                    const slopeDiff = terrain[Math.floor(nextX)] - terrain[Math.floor(t.x)];
+                    // Prevent climbing vertical walls
+                    if (slopeDiff > -8) {
+                        t.x = nextX;
+                        t.fuel = Math.max(0, t.fuel - 0.55);
+                        updateTankPhysics();
+                        syncHUDWithActiveTank();
+                    }
+                }
+            }
+
+            // 2. Update Active Projectiles
+            if (projectiles.length > 0) {
+                for (let i = projectiles.length - 1; i >= 0; i--) {
+                    const p = projectiles[i];
+                    p.trail.push({ x: p.x, y: p.y });
+                    if (p.trail.length > 18) p.trail.shift();
+
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vx += wind;
+                    p.vy += GRAVITY * p.weapon.gravityMult;
+
+                    // Proximity Airburst Check
+                    if (p.weapon.type === 'AIRBURST' && p.vy > 0.5) {
+                        const enemy = tanks[activePlayer === 0 ? 1 : 0];
+                        if (Math.hypot(p.x - enemy.x, p.y - (enemy.y - 15)) < 65) {
+                            detonate(p.x, p.y, p.weapon);
+                            projectiles.splice(i, 1);
+                            continue;
+                        }
+                    }
+
+                    // Cluster / Mega Cluster Split
+                    if ((p.weapon.type === 'CLUSTER' || p.weapon.type === 'MEGA_CLUSTER') && !p.hasSplit && p.vy > 0.2) {
+                        p.hasSplit = true;
+                        SoundFX.click();
+                        const count = p.weapon.type === 'CLUSTER' ? 3 : 5;
+                        for (let s = 0; s < count; s++) {
+                            const sOff = (s - Math.floor(count/2)) * 1.5;
+                            projectiles.push({
+                                x: p.x, y: p.y,
+                                vx: p.vx + sOff, vy: p.vy - 1.5,
+                                weapon: { ...p.weapon, type: 'NORMAL', radius: 24, maxDamage: 16 },
+                                shooterId: p.shooterId, bouncesLeft: 0, hasSplit: true, trail: []
+                            });
+                        }
+                        projectiles.splice(i, 1);
+                        continue;
+                    }
+
+                    // Check out of bounds
+                    if (p.x < 0 || p.x >= WORLD_WIDTH || p.y > WORLD_HEIGHT + 50) {
+                        projectiles.splice(i, 1);
+                        continue;
+                    }
+
+                    // Check direct tank collision or terrain collision
+                    const ix = Math.floor(p.x);
+                    let hit = false;
+                    let hitTank = false;
+
+                    for (const t of tanks) {
+                        if (Math.hypot(p.x - t.x, p.y - (t.y - 12)) < 20) {
+                            hit = true;
+                            hitTank = true;
+                            break;
+                        }
+                    }
+
+                    if (!hit && p.y >= terrain[ix]) {
+                        // Bouncer / Roller shells bounce along terrain before exploding
+                        if (p.weapon.type === 'BOUNCER' && p.bouncesLeft > 0) {
+                            p.bouncesLeft--;
+                            p.y = terrain[ix] - 3;
+                            p.vy = -Math.abs(p.vy) * 0.58;
+                            p.vx *= 0.82;
+                            SoundFX.click();
+                            continue;
+                        }
+                        hit = true;
+                        // Phase shells pass through terrain while flying upwards
+                        if (p.weapon.type === 'PHASE' && p.vy < 0) {
+                            hit = false;
+                        }
+                    }
+
+                    if (hit) {
+                        detonate(p.x, p.y, p.weapon, p.shooterId);
+                        projectiles.splice(i, 1);
+                    }
+                }
+
+                // When all projectiles finish exploding, advance turn
+                if (projectiles.length === 0 && gameState === 'FIRING') {
+                    setTimeout(endTurn, 450);
+                }
+            }
+
+            // 3. Update Particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const pt = particles[i];
+                pt.x += pt.vx;
+                pt.y += pt.vy;
+                pt.vy += 0.08;
+                pt.alpha -= pt.decay;
+                if (pt.alpha <= 0) particles.splice(i, 1);
+            }
+
+            // 4. Update Active Orbital Lasers & Special Ability Animations
+            for (let i = activeLasers.length - 1; i >= 0; i--) {
+                activeLasers[i].timer--;
+                if (activeLasers[i].timer <= 0) activeLasers.splice(i, 1);
+            }
+            for (let i = specialEffects.length - 1; i >= 0; i--) {
+                specialEffects[i].timer--;
+                if (specialEffects[i].timer <= 0) specialEffects.splice(i, 1);
+            }
+
+            // 5. Update Floating Damage Numbers
+            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                const ft = floatingTexts[i];
+                ft.y += ft.vy;
+                ft.alpha -= 0.018;
+                if (ft.alpha <= 0) floatingTexts.splice(i, 1);
+            }
+
+            // 6. Screen Shake decay
+            if (screenShake > 0) {
+                screenShake *= 0.86;
+                if (screenShake < 0.3) screenShake = 0;
+            }
+
+            // 6. Smart Camera Framing (Crucial for 410x502 Smartwatch & Mobile)
+            updateCamera();
+        }
+
+        function updateCamera() {
+            const isWatch = deviceMode === 'watch';
+
+            if (gameState === 'MENU') {
+                camera.targetZoom = isWatch ? 0.75 : 0.85;
+                camera.targetX = WORLD_WIDTH / 2 + Math.sin(Date.now() * 0.0004) * 150;
+                camera.targetY = WORLD_HEIGHT * 0.58;
+            } else if (!autoFollowCam) {
+                // Wide overview showing whole battlefield
+                camera.targetZoom = Math.min(canvas.width / WORLD_WIDTH, canvas.height / WORLD_HEIGHT) * 1.08;
+                camera.targetX = WORLD_WIDTH / 2;
+                camera.targetY = WORLD_HEIGHT * 0.56;
+            } else if (projectiles.length > 0) {
+                // Follow lead projectile in flight
+                const lead = projectiles[0];
+                camera.targetZoom = isWatch ? 0.68 : Math.max(0.75, canvas.width / 1150);
+                camera.targetX = lead.x;
+                camera.targetY = Math.min(WORLD_HEIGHT * 0.65, Math.max(200, lead.y));
+            } else {
+                // Frame active tank + biased look-ahead toward opponent
+                const active = tanks[activePlayer];
+                const enemy = tanks[activePlayer === 0 ? 1 : 0];
+                camera.targetZoom = isWatch ? 0.72 : Math.max(0.78, canvas.width / 1180);
+                camera.targetX = active.x * 0.72 + enemy.x * 0.28 + camera.manualOffsetX;
+                camera.targetY = active.y - (isWatch ? 45 : 70);
+            }
+
+            // Smooth interpolation
+            camera.zoom += (camera.targetZoom - camera.zoom) * 0.1;
+            camera.x += (camera.targetX - camera.x) * 0.1;
+            camera.y += (camera.targetY - camera.y) * 0.1;
+
+            // Clamp camera within world edges
+            const halfVisW = (canvas.width / 2) / camera.zoom;
+            const halfVisH = (canvas.height / 2) / camera.zoom;
+            camera.x = Math.max(halfVisW, Math.min(WORLD_WIDTH - halfVisW, camera.x));
+            camera.y = Math.max(halfVisH * 0.7, Math.min(WORLD_HEIGHT - halfVisH * 0.85, camera.y));
+        }
+
+        /********************************************************************
+         * 10. RENDERING ENGINE (Cartoon-Military Tank Stars Aesthetic)
+         ********************************************************************/
+        function drawScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Sky Gradient
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            skyGrad.addColorStop(0, '#090d1a');
+            skyGrad.addColorStop(0.55, '#1e1b4b');
+            skyGrad.addColorStop(1, '#312e81');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.save();
+
+            // Apply Camera Transform & Screen Shake
+            const shakeX = (Math.random() - 0.5) * screenShake;
+            const shakeY = (Math.random() - 0.5) * screenShake;
+            ctx.translate(canvas.width / 2 + shakeX, canvas.height / 2 + shakeY);
+            ctx.scale(camera.zoom, camera.zoom);
+            ctx.translate(-camera.x, -camera.y);
+
+            // 1. Draw Background Stars
+            ctx.fillStyle = '#ffffff';
+            for (const s of stars) {
+                ctx.globalAlpha = s.alpha;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+
+            // 2. Draw Distant Mountain Silhouette
+            if (mountains.length > 0) {
+                ctx.fillStyle = '#1e1b4b';
+                ctx.beginPath();
+                ctx.moveTo(0, WORLD_HEIGHT);
+                for (const m of mountains) {
+                    ctx.lineTo(m.x, m.y);
+                }
+                ctx.lineTo(WORLD_WIDTH, WORLD_HEIGHT);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // 3. Draw Destructible Terrain
+            const terrGrad = ctx.createLinearGradient(0, 180, 0, WORLD_HEIGHT);
+            terrGrad.addColorStop(0, '#10b981');
+            terrGrad.addColorStop(0.12, '#059669');
+            terrGrad.addColorStop(0.45, '#1e293b');
+            terrGrad.addColorStop(1, '#090d16');
+            ctx.fillStyle = terrGrad;
+
+            ctx.beginPath();
+            ctx.moveTo(0, WORLD_HEIGHT);
+            for (let x = 0; x < WORLD_WIDTH; x += 3) {
+                ctx.lineTo(x, terrain[x]);
+            }
+            ctx.lineTo(WORLD_WIDTH - 1, terrain[WORLD_WIDTH - 1]);
+            ctx.lineTo(WORLD_WIDTH, WORLD_HEIGHT);
+            ctx.closePath();
+            ctx.fill();
+
+            // Glowing Top Ridge Line
+            ctx.strokeStyle = '#34d399';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, terrain[0]);
+            for (let x = 3; x < WORLD_WIDTH; x += 3) {
+                ctx.lineTo(x, terrain[x]);
+            }
+            ctx.stroke();
+
+            // 4. Draw Trajectory Aiming Preview
+            if (gameState === 'AIMING' && tanks[activePlayer]) {
+                drawTrajectoryPreview(tanks[activePlayer]);
+            }
+
+            // 5. Draw Tanks
+            tanks.forEach((t, idx) => {
+                if (t.hp > 0) {
+                    drawTank(t, idx === activePlayer && gameState === 'AIMING');
+                }
+            });
+
+            // 6. Draw Active Projectiles & Trails
+            for (const p of projectiles) {
+                if (p.trail.length > 1) {
+                    ctx.strokeStyle = p.weapon.color;
+                    ctx.lineWidth = 3;
+                    ctx.globalAlpha = 0.45;
+                    ctx.beginPath();
+                    ctx.moveTo(p.trail[0].x, p.trail[0].y);
+                    for (let i = 1; i < p.trail.length; i++) {
+                        ctx.lineTo(p.trail[i].x, p.trail[i].y);
+                    }
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                }
+
+                ctx.fillStyle = p.weapon.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 5.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 7. Draw Explosion Particles
+            for (const pt of particles) {
+                ctx.globalAlpha = Math.max(0, pt.alpha);
+                ctx.fillStyle = pt.color;
+                ctx.beginPath();
+                ctx.arc(pt.x, pt.y, pt.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+
+            // 7.5 Draw Active Orbital Lasers & Custom Ability Animations
+            for (const laser of activeLasers) {
+                ctx.fillStyle = `rgba(45, 212, 191, ${laser.timer / 36})`;
+                ctx.fillRect(laser.x - 18, -WORLD_HEIGHT, 36, WORLD_HEIGHT * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${laser.timer / 36})`;
+                ctx.fillRect(laser.x - 6, -WORLD_HEIGHT, 12, WORLD_HEIGHT * 2);
+            }
+
+            for (const fx of specialEffects) {
+                const progress = 1 - (fx.timer / fx.maxTimer);
+                const alpha = fx.timer / fx.maxTimer;
+                ctx.save();
+
+                if (fx.type === 'NUKE_CLOUD') {
+                    // Expanding radioactive mushroom cloud & shockwave ring
+                    ctx.globalAlpha = alpha;
+                    const stemH = 95 * Math.min(1, progress * 1.8);
+                    ctx.fillStyle = '#a3e635';
+                    ctx.fillRect(fx.x - 14, fx.y - stemH, 28, stemH);
+                    ctx.beginPath();
+                    ctx.arc(fx.x, fx.y - stemH, 48 * Math.min(1, progress * 1.5), 0, Math.PI * 2);
+                    ctx.fillStyle = '#facc15';
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(fx.x, fx.y - 10, progress * 135, 0, Math.PI * 2);
+                    ctx.stroke();
+                } else if (fx.type === 'BLACK_HOLE_VORTEX') {
+                    // Swirling purple event horizon accretion disk
+                    ctx.translate(fx.x, fx.y);
+                    ctx.rotate(Date.now() * 0.015);
+                    ctx.globalAlpha = alpha;
+                    for (let r = 0; r < 3; r++) {
+                        ctx.strokeStyle = r % 2 === 0 ? '#c084fc' : '#38bdf8';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 22 + r * 16 * (1 - progress * 0.4), r, r + Math.PI * 1.3);
+                        ctx.stroke();
+                    }
+                    ctx.fillStyle = '#020617';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 20 * alpha, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (fx.type === 'LIGHTNING_STRIKE') {
+                    // Jagged high-voltage sky bolt
+                    ctx.strokeStyle = '#38bdf8';
+                    ctx.lineWidth = 5;
+                    ctx.globalAlpha = alpha;
+                    ctx.beginPath();
+                    let lx = fx.x;
+                    ctx.moveTo(lx, fx.y - 380);
+                    for (let ly = fx.y - 340; ly <= fx.y; ly += 35) {
+                        lx += (Math.random() - 0.5) * 42;
+                        ctx.lineTo(lx, ly);
+                    }
+                    ctx.stroke();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                } else if (fx.type === 'BLIZZARD_STORM') {
+                    // Swirling icy vortex dome
+                    ctx.globalAlpha = alpha * 0.65;
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.beginPath();
+                    ctx.arc(fx.x, fx.y - 15, 85, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#e0f2fe';
+                    ctx.lineWidth = 2.5;
+                    for (let s = 0; s < 8; s++) {
+                        const ang = Date.now() * 0.01 + s;
+                        ctx.beginPath();
+                        ctx.arc(fx.x + Math.cos(ang) * 45, fx.y - 15 + Math.sin(ang) * 30, 5, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                } else if (fx.type === 'QUAKE_WAVES') {
+                    ctx.strokeStyle = '#eab308';
+                    ctx.lineWidth = 4;
+                    ctx.globalAlpha = alpha;
+                    ctx.beginPath();
+                    ctx.arc(fx.x, fx.y, progress * 120, Math.PI, 0);
+                    ctx.stroke();
+                } else if (fx.type === 'VAMP_BEAM') {
+                    ctx.strokeStyle = '#4ade80';
+                    ctx.lineWidth = 4 * alpha;
+                    ctx.setLineDash([8, 6]);
+                    ctx.beginPath();
+                    ctx.moveTo(fx.x1, fx.y1);
+                    ctx.lineTo(fx.x2, fx.y2);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                } else if (fx.type === 'TELEPORT_FLASH') {
+                    ctx.globalAlpha = alpha;
+                    ctx.strokeStyle = '#e879f9';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.arc(fx.x, fx.y - 15, (1 - alpha) * 45 + 10, 0, Math.PI * 2);
+                    ctx.stroke();
+                } else if (fx.type === 'ICE_SPIKES') {
+                    ctx.globalAlpha = alpha;
+                    ctx.fillStyle = '#bae6fd';
+                    for (let k = -2; k <= 2; k++) {
+                        ctx.beginPath();
+                        ctx.moveTo(fx.x + k * 14 - 8, fx.y);
+                        ctx.lineTo(fx.x + k * 14, fx.y - 48);
+                        ctx.lineTo(fx.x + k * 14 + 8, fx.y);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                }
+
+                ctx.restore();
+            }
+
+            // 8. Draw Floating Damage Numbers
+            ctx.font = '900 18px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            for (const ft of floatingTexts) {
+                ctx.globalAlpha = Math.max(0, ft.alpha);
+                ctx.fillStyle = '#000000';
+                ctx.fillText(ft.text, ft.x + 1.5, ft.y + 1.5);
+                ctx.fillStyle = ft.color;
+                ctx.fillText(ft.text, ft.x, ft.y);
+            }
+            ctx.globalAlpha = 1;
+
+            ctx.restore();
+        }
+
+        function drawTank(t, isCurrentTurn) {
+            ctx.save();
+            ctx.translate(t.x, t.y);
+            const style = t.classData ? t.classData.hullStyle : 'ABRAMS';
+            const now = Date.now();
+
+            // Active turn bouncing chevron indicator above tank
+            if (isCurrentTurn) {
+                const bounce = Math.sin(now * 0.008) * 5;
+                ctx.fillStyle = '#facc15';
+                ctx.beginPath();
+                ctx.moveTo(0, -52 + bounce);
+                ctx.lineTo(-7, -62 + bounce);
+                ctx.lineTo(7, -62 + bounce);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // Hover bobbing effect for PHANTOM hover-tank
+            if (style === 'PHANTOM') {
+                ctx.translate(0, Math.sin(now * 0.007) * 4 - 4);
+            }
+
+            // Rotate tank chassis with terrain slope
+            ctx.rotate(t.tilt);
+
+            // 1. Turret Barrel (rotates independently in world space)
+            ctx.save();
+            ctx.translate(0, -15);
+            ctx.rotate(-t.tilt); // Cancel chassis slope for accurate world-angle aiming
+            const rad = (t.angle * Math.PI) / 180;
+            ctx.rotate(-rad);
+
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 2;
+
+            if (style === 'MAMMOTH') {
+                // Heavy dual twin-cannons
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fillRect(0, -7, 32, 5);
+                ctx.strokeRect(0, -7, 32, 5);
+                ctx.fillRect(0, 1, 32, 5);
+                ctx.strokeRect(0, 1, 32, 5);
+                ctx.fillStyle = t.secondaryColor;
+                ctx.fillRect(26, -8, 6, 15);
+            } else if (style === 'TESLA') {
+                // Copper/Teal Tesla Coil emitter with electric rings
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillRect(0, -3, 28, 6);
+                ctx.strokeStyle = '#2dd4bf';
+                for (let c = 8; c <= 22; c += 6) {
+                    ctx.beginPath();
+                    ctx.moveTo(c, -7);
+                    ctx.lineTo(c, 7);
+                    ctx.stroke();
+                }
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath();
+                ctx.arc(28, 0, 5, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (style === 'PHANTOM') {
+                // Split futuristic railgun prongs
+                ctx.fillStyle = '#e2e8f0';
+                ctx.fillRect(0, -6, 30, 3);
+                ctx.fillRect(0, 3, 30, 3);
+                ctx.fillStyle = '#e879f9';
+                ctx.fillRect(4, -2, 22, 4);
+            } else if (style === 'INFERNO') {
+                // Wide flamethrower / magma mortar nozzle with pilot flame
+                ctx.fillStyle = '#78350f';
+                ctx.beginPath();
+                ctx.roundRect(0, -5, 26, 10, 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = '#f97316';
+                ctx.beginPath();
+                ctx.arc(29, 0, 4 + Math.sin(now * 0.02) * 1.5, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (style === 'FROST') {
+                // Crystalline ice prism cannon
+                ctx.fillStyle = '#bae6fd';
+                ctx.beginPath();
+                ctx.moveTo(0, -5);
+                ctx.lineTo(32, -2);
+                ctx.lineTo(32, 2);
+                ctx.lineTo(0, 5);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            } else {
+                // Standard / Spider precision barrel
+                ctx.fillStyle = '#e2e8f0';
+                ctx.beginPath();
+                ctx.roundRect(0, -4, 30, 8, 3);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = t.secondaryColor;
+                ctx.fillRect(24, -5, 6, 10);
+            }
+            ctx.restore();
+
+            // 2. Custom Lower Propulsion (Tracks, Hover-thrusters, Spider-legs, Spiked Rollers)
+            if (style === 'PHANTOM') {
+                // Glowing anti-grav thruster pad
+                ctx.fillStyle = '#38bdf8';
+                ctx.globalAlpha = 0.65 + Math.sin(now * 0.02) * 0.25;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, 22, 4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            } else if (style === 'SPIDER') {
+                // 4 Articulated mechanical spider legs
+                ctx.strokeStyle = '#1e293b';
+                ctx.lineWidth = 3.5;
+                const step = drivingDir !== 0 ? Math.sin(now * 0.025) * 4 : 0;
+                [-18, -8, 8, 18].forEach((lx, idx) => {
+                    const lift = (idx % 2 === 0 ? step : -step);
+                    ctx.beginPath();
+                    ctx.moveTo(lx * 0.5, -8);
+                    ctx.lineTo(lx, -14 + lift);
+                    ctx.lineTo(lx * 1.25, 2 + lift);
+                    ctx.stroke();
+                });
+            } else {
+                // Heavy armored caterpillar tracks
+                ctx.fillStyle = '#1e293b';
+                ctx.strokeStyle = '#020617';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.roundRect(-23, -9, 46, 11, 5);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = style === 'INFERNO' ? '#f97316' : '#64748b';
+                for (let wx = -15; wx <= 15; wx += 7.5) {
+                    ctx.beginPath();
+                    ctx.arc(wx, -3.5, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Front spiked ram for Inferno Pyro
+                if (style === 'INFERNO') {
+                    ctx.fillStyle = '#94a3b8';
+                    ctx.beginPath();
+                    ctx.moveTo(21, -10);
+                    ctx.lineTo(29, -2);
+                    ctx.lineTo(21, 1);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+
+            // 3. Custom Armored Hull & Turret Dome per Class
+            ctx.fillStyle = t.primaryColor;
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 2;
+
+            if (style === 'MAMMOTH') {
+                // Boxy double-deck heavy juggernaut hull
+                ctx.beginPath();
+                ctx.roundRect(-24, -19, 48, 12, 3);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = t.secondaryColor;
+                ctx.beginPath();
+                ctx.roundRect(-14, -26, 28, 9, 3);
+                ctx.fill();
+                ctx.stroke();
+            } else if (style === 'TESLA') {
+                // Rounded generator hull + glowing plasma orb dome
+                ctx.beginPath();
+                ctx.moveTo(-21, -8);
+                ctx.lineTo(-15, -18);
+                ctx.lineTo(15, -18);
+                ctx.lineTo(21, -8);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath();
+                ctx.arc(0, -21, 9 + Math.sin(now * 0.015) * 1.2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+            } else if (style === 'PHANTOM') {
+                // Sleek crescent saucer hull
+                ctx.beginPath();
+                ctx.moveTo(-25, -6);
+                ctx.quadraticCurveTo(0, -24, 25, -6);
+                ctx.quadraticCurveTo(0, -2, -25, -6);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath();
+                ctx.arc(0, -15, 7, Math.PI, 0);
+                ctx.fill();
+            } else if (style === 'FROST') {
+                // Sharp angular ice-crystal hull
+                ctx.beginPath();
+                ctx.moveTo(-22, -8);
+                ctx.lineTo(-12, -20);
+                ctx.lineTo(0, -26);
+                ctx.lineTo(12, -20);
+                ctx.lineTo(22, -8);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            } else if (style === 'SPIDER') {
+                // Arachnid thorax pod with glowing red/green cyber eyes
+                ctx.beginPath();
+                ctx.ellipse(0, -14, 18, 9, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(8, -15, 2.5, 0, Math.PI * 2);
+                ctx.arc(13, -13, 2, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                // Classic sloped Abrams / Inferno hull
+                ctx.beginPath();
+                ctx.moveTo(-20, -8);
+                ctx.lineTo(-14, -18);
+                ctx.lineTo(14, -18);
+                ctx.lineTo(20, -8);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = t.secondaryColor;
+                ctx.beginPath();
+                ctx.arc(0, -17, 10, Math.PI, 0);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            // Frozen Ice Block Overlay if tank is affected by Cryo/Blizzard
+            if (t.frozen) {
+                ctx.fillStyle = 'rgba(125, 211, 252, 0.45)';
+                ctx.strokeStyle = '#bae6fd';
+                ctx.lineWidth = 1.5;
+                ctx.fillRect(-24, -28, 48, 30);
+                ctx.strokeRect(-24, -28, 48, 30);
+            }
+
+            ctx.restore();
+        }
+
+        function drawTrajectoryPreview(t) {
+            const wep = t.classData.weapons[t.weaponIdx];
+            const rad = (t.angle * Math.PI) / 180;
+            const speed = (t.power * 0.165) * wep.speedMult;
+
+            let sx = t.x + Math.cos(rad) * 28;
+            let sy = (t.y - 14) - Math.sin(rad) * 28;
+            let svx = Math.cos(rad) * speed;
+            let svy = -Math.sin(rad) * speed;
+
+            // Draw Tank Stars style glowing dotted parabolic preview arc
+            for (let step = 0; step < 36; step++) {
+                sx += svx * 1.4;
+                sy += svy * 1.4;
+                svx += wind * 1.4;
+                svy += GRAVITY * wep.gravityMult * 1.4;
+
+                const ix = Math.floor(sx);
+                if (ix < 0 || ix >= WORLD_WIDTH || sy >= terrain[ix]) break;
+
+                const alpha = 1 - (step / 36);
+                ctx.fillStyle = wep.color;
+                ctx.globalAlpha = alpha * 0.85;
+                ctx.beginPath();
+                ctx.arc(sx, sy, 3.2 - (step * 0.05), 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        /********************************************************************
+         * 11. RESPONSIVE CANVAS RESIZING & MAIN LOOP
+         ********************************************************************/
+        function resizeCanvas() {
+            const container = document.getElementById('canvasContainer');
+            if (!container) return;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        function gameLoop() {
+            updateGame();
+            drawScene();
+            requestAnimationFrame(gameLoop);
+        }
+
+        window.onload = function () {
+            resizeCanvas();
+            initEnvironment();
+            generateTerrain();
+            createTanks();
+            gameLoop();
+        };
+    </script>
+</body>
+</html>
